@@ -12,39 +12,39 @@ import { useState } from 'react';
 // Definição dos dados do processo
 const processSteps = [
   {
-    title: 'Coleta',
-    description: 'Levantamento inicial das informações do cliente',
-    details: 'Entendemos seus objetivos e coletamos dados importantes para análise',
+    title: 'Reunião inicial',
+    description: 'Conversa sobre seu contexto financeiro atual',
+    details: 'Nessa conversa entendemos o seu contexto financeiro atual, objetivos de vida e outros fatores',
     duration: null
   },
   {
-    title: 'Pré-Análise',
-    description: 'Análise detalhada do perfil e objetivos',
-    details: 'Avaliamos sua situação atual e definimos estratégias personalizadas',
+    title: 'Diagnóstico',
+    description: 'Feedback sobre sua situação atual',
+    details: 'Entenda as nossas sugestões para otimizar seu patrimônio',
     duration: null
   },
   {
-    title: 'Reunião Inicial',
-    description: 'Reunião com os consultores',
-    details: 'Apresentação das análises iniciais e alinhamento de expectativas',
-    duration: 'Duração Aprox. de 1h'
-  },
-  {
-    title: 'Recomendações',
-    description: 'Validação das informações e entendimentos',
-    details: 'Apresentamos nossas recomendações personalizadas',
+    title: 'Período de teste',
+    description: 'Acompanhamento sem compromisso ou custo',
+    details: 'Implementação gradual das mudanças sugeridas no diagnóstico',
     duration: null
   },
   {
-    title: 'Implementação',
-    description: 'Execução das estratégias definidas',
-    details: 'Implementamos as soluções de forma estruturada',
+    title: 'Feedback',
+    description: 'Discussão sobre o período de teste',
+    details: 'Feedback do cliente e negociação de valores',
     duration: null
   },
   {
-    title: 'Monitoramento',
-    description: 'Acompanhamento contínuo',
-    details: 'Monitoramento constante e ajustes quando necessário',
+    title: 'Início do serviço',
+    description: 'Gestão completa do seu patrimônio',
+    details: 'Relatório mensal dos resultados e acompanhamento contínuo',
+    duration: null
+  },
+  {
+    title: 'Renovação',
+    description: 'Renegociação anual de termos e valores',
+    details: 'Evolução do planejamento financeiro realizado e ajustes',
     duration: null
   }
 ];
@@ -88,7 +88,7 @@ const ProcessSection = () => {
                   </p>
                 </div>
 
-                {/* Informações adicionais no hover */}
+                {/* Informaç��es adicionais no hover */}
                 {hoveredIndex === index && (
                   <div className="absolute top-full left-0 right-0 mt-2 p-4 bg-white rounded-lg shadow-xl z-10">
                     <p className="text-gray-800 text-sm mb-2">

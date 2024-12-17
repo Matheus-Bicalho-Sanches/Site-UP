@@ -47,7 +47,7 @@ const HeroSection = () => {
           </h1>
 
           {/* Subtítulo */}
-          <p className="text-lg sm:text-xl md:text-2xl text-gray-300 mb-8 leading-relaxed">
+          <p className="text-lg sm:text-xl md:text-xl text-gray-300 mb-8 leading-relaxed">
             Gestão profissional de investimentos. Invista com segurança e comodidade.
           </p>
 
@@ -64,7 +64,7 @@ const HeroSection = () => {
           {/* Indicadores de credibilidade */}
           <div className="mt-16 grid grid-cols-2 md:grid-cols-3 gap-8">
             <div className="text-center">
-              <div className="text-3xl font-bold text-white">+50</div>
+              <div className="text-3xl font-bold text-white">+30</div>
               <div className="text-gray-400">Famílias Atendidas</div>
             </div>
             <div className="text-center">

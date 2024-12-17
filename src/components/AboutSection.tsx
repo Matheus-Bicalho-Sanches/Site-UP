@@ -1,10 +1,10 @@
 import React from 'react';
 import Image from 'next/image';
 import { 
-  ChartBarIcon, 
-  UserGroupIcon, 
+  ChartPieIcon, 
+  BuildingLibraryIcon, 
   ShieldCheckIcon, 
-  TrophyIcon 
+  BanknotesIcon 
 } from '@heroicons/react/24/outline';
 
 const AboutSection = () => {
@@ -18,8 +18,7 @@ const AboutSection = () => {
               Excelência em Gestão de Patrimônio
             </h2>
             <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-              Há mais de uma década, nos dedicamos a proteger e fazer crescer o patrimônio 
-              de nossos clientes através de uma gestão profissional e personalizada.
+              Nos dedicamos a proteger e fazer crescer o patrimônio de nossos clientes através de uma gestão profissional e personalizada com custo acessível.
             </p>
           </div>
 
@@ -32,10 +31,8 @@ const AboutSection = () => {
                   Nossa História
                 </h3>
                 <p className="text-gray-600">
-                  Fundada em 2013, a UP Carteiras Administradas nasceu com o propósito 
-                  de democratizar o acesso à gestão profissional de investimentos. 
-                  Ao longo dos anos, construímos uma sólida reputação baseada em 
-                  resultados consistentes e atendimento personalizado.
+                  Fundada em 2024, a UP Carteiras Administradas nasceu com o propósito 
+                  de democratizar o acesso à gestão profissional de investimentos.
                 </p>
               </div>
 
@@ -56,7 +53,7 @@ const AboutSection = () => {
                 </h3>
                 <p className="text-gray-600">
                   Atendemos investidores que buscam uma gestão profissional de seus 
-                  recursos, com patrimônio a partir de R$ 100 mil. Nosso público inclui 
+                  recursos, com patrimônio a partir de R$ 50 mil. Nosso público inclui 
                   profissionais liberais, empresários e famílias que valorizam uma 
                   abordagem personalizada e de longo prazo.
                 </p>
@@ -66,27 +63,27 @@ const AboutSection = () => {
             {/* Coluna da Direita - Cards */}
             <div className="grid grid-cols-2 gap-6">
               <div className="bg-gray-50 p-6 rounded-lg">
-                <ChartBarIcon className="w-10 h-10 text-cyan-500 mb-4" />
-                <h4 className="text-xl font-semibold text-gray-900 mb-2">Retorno Médio</h4>
-                <p className="text-gray-600">15,8% a.a. nos últimos 5 anos</p>
+                <ChartPieIcon className="w-10 h-10 text-cyan-500 mb-4" />
+                <h4 className="text-xl font-semibold text-gray-900 mb-2">Diversificação</h4>
+                <p className="text-gray-600">Invista em renda fixa, renda variável, ativos internacionais e cripto.</p>
               </div>
 
               <div className="bg-gray-50 p-6 rounded-lg">
-                <UserGroupIcon className="w-10 h-10 text-cyan-500 mb-4" />
-                <h4 className="text-xl font-semibold text-gray-900 mb-2">Clientes Ativos</h4>
-                <p className="text-gray-600">Mais de 500 investidores</p>
+                <BuildingLibraryIcon className="w-10 h-10 text-cyan-500 mb-4" />
+                <h4 className="text-xl font-semibold text-gray-900 mb-2">Corretoras</h4>
+                <p className="text-gray-600">Trabalhamos com XP e BTG, mas podemos te ajudar em outras plataformas também.</p>
               </div>
 
               <div className="bg-gray-50 p-6 rounded-lg">
                 <ShieldCheckIcon className="w-10 h-10 text-cyan-500 mb-4" />
                 <h4 className="text-xl font-semibold text-gray-900 mb-2">Certificações</h4>
-                <p className="text-gray-600">CVM, ANBIMA e ISO 9001</p>
+                <p className="text-gray-600">Gestor certificado CGA. Gestora em processo de homologação na Anbima e CVM.</p>
               </div>
 
               <div className="bg-gray-50 p-6 rounded-lg">
-                <TrophyIcon className="w-10 h-10 text-cyan-500 mb-4" />
-                <h4 className="text-xl font-semibold text-gray-900 mb-2">Premiações</h4>
-                <p className="text-gray-600">Top 10 Gestoras Independentes</p>
+                <BanknotesIcon className="w-10 h-10 text-cyan-500 mb-4" />
+                <h4 className="text-xl font-semibold text-gray-900 mb-2">Cashback</h4>
+                <p className="text-gray-600">Receba de volta parte da receita que você gera para a corretora.</p>
               </div>
             </div>
           </div>
@@ -109,11 +106,11 @@ const AboutSection = () => {
 
               <div>
                 <h4 className="text-xl font-semibold text-gray-900 mb-3">
-                  Transparência Total
+                  ZERO conflito de interesse
                 </h4>
                 <p className="text-gray-600">
-                  Relatórios detalhados e comunicação clara sobre todas as 
-                  decisões de investimento.
+                  Não recebemos um centavo sequer de comissão, seja em seus investimentos, 
+                  seguros, câmbio ou outros produtos.
                 </p>
               </div>
 
@@ -122,8 +119,7 @@ const AboutSection = () => {
                   Atendimento Exclusivo
                 </h4>
                 <p className="text-gray-600">
-                  Equipe dedicada e especializada para atender suas necessidades 
-                  de forma personalizada.
+                  Carteira de investimentos personalizada, de acordo com seus objetivos de vida e contexto financeiro.
                 </p>
               </div>
             </div>
