@@ -22,14 +22,27 @@ const HeroSection = () => {
       {/* Container principal */}
       <div className="relative z-20 container mx-auto px-4 py-32 sm:py-48">
         <div className="max-w-3xl mx-auto text-center">
+          {/* Logo */}
+          <div className="mb-8 flex justify-center">
+            <div className="relative w-[300px] h-[300px]">
+              <Image
+                src="/images/up-logo.png"
+                alt="UP Carteiras Administradas"
+                fill
+                className="object-contain"
+                priority
+              />
+            </div>
+          </div>
+
           {/* Título principal */}
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-6">
-            Transforme seu Patrimônio em Legado
+            UP Carteiras Administradas
           </h1>
 
           {/* Subtítulo */}
           <p className="text-xl sm:text-2xl text-gray-300 mb-8">
-            Assessoria financeira personalizada para maximizar seus investimentos com segurança e rentabilidade.
+            Gestão profissional de investimentos com estratégias personalizadas para maximizar seu patrimônio.
           </p>
 
           {/* Botões de ação */}
