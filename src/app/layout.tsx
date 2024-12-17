@@ -1,13 +1,17 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
-import Navbar from '@/components/Navbar'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Seu Site',
-  description: 'Descrição do seu site',
+  title: 'UP Carteiras Administradas',
+  description: 'Gestão profissional de investimentos com estratégias personalizadas para maximizar seu patrimônio.',
+  icons: {
+    icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+    ],
+  },
 }
 
 export default function RootLayout({
@@ -17,12 +21,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-BR">
-      <body className={inter.className}>
-        <Navbar />
-        <main className="min-h-screen">
-          {children}
-        </main>
-      </body>
+      <body className={inter.className}>{children}</body>
     </html>
   )
 } 
