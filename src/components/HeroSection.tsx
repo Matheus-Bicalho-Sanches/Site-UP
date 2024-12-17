@@ -27,7 +27,7 @@ const HeroSection = () => {
       <div className="relative z-20 container mx-auto px-4 py-32 sm:py-48">
         <div className="max-w-3xl mx-auto text-center">
           {/* Logo */}
-          <div className="mb-4 flex justify-center">
+          <div className="mb-2 flex justify-center">
             <div className="relative w-[300px] h-[300px]">
               <Image
                 src="/images/up-logo.png"
@@ -48,13 +48,13 @@ const HeroSection = () => {
 
           {/* Subtítulo */}
           <p className="text-xl sm:text-2xl text-gray-300 mb-8 leading-relaxed">
-            Gestão profissional de investimentos com estratégias personalizadas para maximizar seu patrimônio.
+            Gestão profissional de investimentos. Invista com segurança e comodidade.
           </p>
 
           {/* Botões de ação */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition duration-300 transform hover:scale-105">
-              Fale com um Especialista
+              Entre em contato conosco
             </button>
             <button className="px-8 py-3 bg-transparent border-2 border-white text-white hover:bg-white/10 rounded-lg font-semibold transition duration-300 transform hover:scale-105">
               Conheça Nossos Serviços
@@ -64,15 +64,15 @@ const HeroSection = () => {
           {/* Indicadores de credibilidade */}
           <div className="mt-16 grid grid-cols-2 md:grid-cols-3 gap-8">
             <div className="text-center">
-              <div className="text-3xl font-bold text-white">+1000</div>
-              <div className="text-gray-400">Clientes Ativos</div>
+              <div className="text-3xl font-bold text-white">+50</div>
+              <div className="text-gray-400">Famílias Atendidas</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-white">R$ 500M+</div>
+              <div className="text-3xl font-bold text-white">R$ 30M+</div>
               <div className="text-gray-400">Sob Gestão</div>
             </div>
             <div className="text-center md:col-span-1 col-span-2">
-              <div className="text-3xl font-bold text-white">15 Anos</div>
+              <div className="text-3xl font-bold text-white">10 Anos</div>
               <div className="text-gray-400">de Experiência</div>
             </div>
           </div>
