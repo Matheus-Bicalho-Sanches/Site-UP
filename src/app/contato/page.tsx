@@ -12,13 +12,13 @@ export default function ContatoPage() {
               Entre em Contato
             </h1>
             <p className="text-base sm:text-lg text-gray-600">
-              Estamos prontos para ajudar você a alcançar seus objetivos de investimento
+              Estamos prontos para ajudar você em seus investimentos
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 gap-8">
             {/* Formulário de Contato */}
-            <div className="bg-white rounded-lg shadow-lg p-8">
+            <div className="bg-white rounded-lg shadow-lg p-8 order-2 md:order-1">
               <h2 className="text-2xl font-semibold text-gray-900 mb-6 flex items-center">
                 <EnvelopeIcon className="w-6 h-6 mr-2 text-cyan-500" />
                 Envie uma mensagem
@@ -52,7 +52,7 @@ export default function ContatoPage() {
 
                 <div>
                   <label htmlFor="telefone" className="block text-sm font-medium text-gray-700 mb-1">
-                    Telefone
+                    WhatsApp
                   </label>
                   <input
                     type="tel"
@@ -86,17 +86,19 @@ export default function ContatoPage() {
             </div>
 
             {/* WhatsApp */}
-            <div className="bg-white rounded-lg shadow-lg p-8 flex flex-col">
+            <div className="bg-white rounded-lg shadow-lg p-8 flex flex-col order-1 md:order-2">
               <h2 className="text-2xl font-semibold text-gray-900 mb-6 flex items-center">
                 <PhoneIcon className="w-6 h-6 mr-2 text-cyan-500" />
                 Atendimento via WhatsApp
               </h2>
               <p className="text-gray-600 mb-8">
-                Prefere uma conversa mais direta? Nossos especialistas estão prontos para te atender pelo WhatsApp.
-                Clique no botão abaixo para iniciar uma conversa.
+                Prefere uma conversa mais direta? Clique no botão abaixo para falar com a nossa equipe no WhatsApp.
               </p>
               
-              <button
+              <a
+                href="https://wa.me/5543991811304"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="mt-auto w-full bg-green-500 text-white py-3 px-6 rounded-md hover:bg-green-600 transition duration-300 flex items-center justify-center"
               >
                 <svg
@@ -110,7 +112,7 @@ export default function ContatoPage() {
                   />
                 </svg>
                 Conversar no WhatsApp
-              </button>
+              </a>
             </div>
           </div>
         </div>
