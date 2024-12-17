@@ -54,15 +54,22 @@ const HeroSection = () => {
 
           {/* Botões de ação */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link
-              href="/contato"
+            <a
+              href="https://wa.me/5543991811304"
+              target="_blank"
+              rel="noopener noreferrer"
               className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition duration-300 transform hover:scale-105"
             >
               Entre em contato conosco
-            </Link>
-            <button className="px-8 py-3 bg-transparent border-2 border-white text-white hover:bg-white/10 rounded-lg font-semibold transition duration-300 transform hover:scale-105">
-              Conheça Nossos Serviços
-            </button>
+            </a>
+            <a
+              href="https://www.instagram.com/up_carteiras_administradas/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-8 py-3 bg-transparent border-2 border-white text-white hover:bg-white/10 rounded-lg font-semibold transition duration-300 transform hover:scale-105"
+            >
+              Conheça nosso Instagram
+            </a>
           </div>
 
           {/* Indicadores de credibilidade */}

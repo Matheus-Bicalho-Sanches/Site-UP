@@ -52,8 +52,10 @@ const Navbar = () => {
             >
               Início
             </Link>
-            <Link
-              href="/contato"
+            <a
+              href="https://wa.me/5543991811304"
+              target="_blank"
+              rel="noopener noreferrer"
               className={`px-6 py-2 rounded-md transition-colors ${
                 isScrolled || isContactPage
                   ? 'bg-cyan-500 text-white hover:bg-cyan-600' 
@@ -61,7 +63,7 @@ const Navbar = () => {
               }`}
             >
               Entre em contato conosco
-            </Link>
+            </a>
           </div>
         </div>
       </div>

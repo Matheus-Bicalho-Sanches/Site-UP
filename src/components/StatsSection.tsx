@@ -131,12 +131,14 @@ const StatsSection = () => {
 
           {/* Botão CTA */}
           <div className="mt-16 text-center">
-            <Link
-              href="/contato"
+            <a
+              href="https://wa.me/5543991811304"
+              target="_blank"
+              rel="noopener noreferrer"
               className="px-8 py-4 bg-cyan-500 hover:bg-cyan-600 text-white rounded-lg font-semibold text-lg transition duration-300 transform hover:scale-105 hover:shadow-lg"
             >
               Agende uma consultoria gratuita
-            </Link>
+            </a>
           </div>
         </div>
       </div>
