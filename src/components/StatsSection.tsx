@@ -41,30 +41,7 @@ const StatsSection = () => {
             - md:grid-cols-4: 4 colunas em desktop
           */}
           <div ref={ref} className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {/* Card: Famílias atendidas */}
-            <div className="bg-gray-800/50 p-6 rounded-lg border border-cyan-500/20 hover:border-cyan-500/40 transition-colors">
-              {/* Ícone */}
-              <div className="flex items-center justify-center mb-2">
-                <span className="text-cyan-400">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                  </svg>
-                </span>
-              </div>
-              {/* Número animado */}
-              <div className="text-4xl font-bold text-white text-center mb-1">
-                +<CountUp 
-                  end={1000} // Valor final
-                  duration={2} // Duração da animação em segundos
-                  start={inView ? 0 : undefined} // Começa do 0 quando visível
-                />
-              </div>
-              <p className="text-gray-400 text-center text-sm">
-                Famílias<br />atendidas
-              </p>
-            </div>
-
-            {/* Card: Valor sob aconselhamento */}
+            {/* Card: Valor mínimo */}
             <div className="bg-gray-800/50 p-6 rounded-lg border border-cyan-500/20 hover:border-cyan-500/40 transition-colors">
               <div className="flex items-center justify-center mb-2">
                 <span className="text-cyan-400">
@@ -73,38 +50,16 @@ const StatsSection = () => {
                   </svg>
                 </span>
               </div>
-              {/* Número animado com sufixo */}
               <div className="text-4xl font-bold text-white text-center mb-1">
-                +<CountUp 
-                  end={5} 
+                <CountUp 
+                  end={50} 
                   duration={2} 
                   start={inView ? 0 : undefined} 
                 />{' '}
-                <span className="text-2xl">bilhões</span>
+                <span className="text-2xl">mil</span>
               </div>
               <p className="text-gray-400 text-center text-sm">
-                Sob<br />aconselhamento
-              </p>
-            </div>
-
-            {/* Card: Instituições parceiras */}
-            <div className="bg-gray-800/50 p-6 rounded-lg border border-cyan-500/20 hover:border-cyan-500/40 transition-colors">
-              <div className="flex items-center justify-center mb-2">
-                <span className="text-cyan-400">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                  </svg>
-                </span>
-              </div>
-              <div className="text-4xl font-bold text-white text-center mb-1">
-                +<CountUp 
-                  end={10} 
-                  duration={2} 
-                  start={inView ? 0 : undefined} 
-                />
-              </div>
-              <p className="text-gray-400 text-center text-sm">
-                Instituições parceiras<br />nacionais e internacionais
+                Valor mínimo<br />para investir
               </p>
             </div>
 
@@ -117,19 +72,67 @@ const StatsSection = () => {
                   </svg>
                 </span>
               </div>
-              {/* Número animado com sufixo */}
               <div className="text-4xl font-bold text-white text-center mb-1">
-                +<CountUp 
-                  end={8} 
+                <CountUp 
+                  end={100} 
                   duration={2} 
                   start={inView ? 0 : undefined} 
-                />{' '}
-                <span className="text-2xl">milhões</span>
+                />
+                <span className="text-2xl">%</span>
               </div>
               <p className="text-gray-400 text-center text-sm">
-                em cashback para<br />nossos clientes
+                de cashback<br />das comissões
               </p>
             </div>
+
+            {/* Card: Custo zero */}
+            <div className="bg-gray-800/50 p-6 rounded-lg border border-cyan-500/20 hover:border-cyan-500/40 transition-colors">
+              <div className="flex items-center justify-center mb-2">
+                <span className="text-cyan-400">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </span>
+              </div>
+              <div className="text-4xl font-bold text-white text-center mb-1">
+                <CountUp 
+                  end={0} 
+                  duration={1} 
+                  start={inView ? 100 : undefined} 
+                />
+              </div>
+              <p className="text-gray-400 text-center text-sm">
+                Custo durante<br />período de teste
+              </p>
+            </div>
+
+            {/* Card: Atendimento */}
+            <div className="bg-gray-800/50 p-6 rounded-lg border border-cyan-500/20 hover:border-cyan-500/40 transition-colors">
+              <div className="flex items-center justify-center mb-2">
+                <span className="text-cyan-400">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                  </svg>
+                </span>
+              </div>
+              <div className="text-4xl font-bold text-white text-center mb-1">
+                <CountUp 
+                  end={10} 
+                  duration={2} 
+                  start={inView ? 0 : undefined} 
+                />
+              </div>
+              <p className="text-gray-400 text-center text-sm">
+                Nota do nosso<br />atendimento
+              </p>
+            </div>
+          </div>
+
+          {/* Botão CTA */}
+          <div className="mt-16 text-center">
+            <button className="px-8 py-4 bg-cyan-500 hover:bg-cyan-600 text-white rounded-lg font-semibold text-lg transition duration-300 transform hover:scale-105 hover:shadow-lg">
+              Agende uma consultoria gratuita
+            </button>
           </div>
         </div>
       </div>
