@@ -18,14 +18,14 @@ const ComparisonSection = () => {
               </h3>
               <ul className="space-y-4">
                 {[
-                  'Gestão profissional dedicada e especializada',
+                  'ZERO conflito de interesse',
                   'Agilidade na execução das operações',
                   'Decisões técnicas sem influência emocional',
                   'Monitoramento constante do portfólio',
-                  'Rebalanceamentos automáticos',
+                  'Rebalanceamentos sempre que necessário',
                   'Maior eficiência tributária',
-                  'Processo de investimento estruturado',
-                  'Relatórios detalhados de performance'
+                  'Gestão profissional dedicada e especializada',
+                  'Receba as comissões que seu assessor receberia'
                 ].map((item, index) => (
                   <li key={index} className="flex items-start">
                     <CheckCircleIcon className="w-6 h-6 text-cyan-500 flex-shrink-0 mr-2" />
@@ -42,14 +42,14 @@ const ComparisonSection = () => {
               </h3>
               <ul className="space-y-4">
                 {[
-                  'Processo decisório mais lento e burocrático',
+                  'Recomendações baseadas no que gera mais comissão',
                   'Dependência da aprovação do cliente para cada operação',
                   'Influência emocional nas decisões de investimento',
                   'Acompanhamento não sistemático da carteira',
                   'Rebalanceamentos manuais e não padronizados',
                   'Menor eficiência na gestão tributária',
                   'Processo de investimento não estruturado',
-                  'Relatórios básicos de acompanhamento'
+                  'Processo decisório mais lento e burocrático'
                 ].map((item, index) => (
                   <li key={index} className="flex items-start">
                     <XCircleIcon className="w-6 h-6 text-red-400 flex-shrink-0 mr-2" />
