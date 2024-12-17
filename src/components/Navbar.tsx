@@ -28,7 +28,9 @@ const Navbar = () => {
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
           <Link href="/" className="flex items-center">
-            <div className="relative w-32 h-12">
+            <div className={`relative w-32 h-12 transition-opacity duration-300 ${
+              isContactPage || isScrolled ? 'opacity-100' : 'opacity-0'
+            }`}>
               <Image
                 src={isScrolled || isContactPage ? "/images/up-logo-blue.png" : "/images/up-logo-white.png"}
                 alt="UP Carteiras Administradas"

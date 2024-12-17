@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Link from 'next/link';
 
 const HeroSection = () => {
   return (
@@ -24,11 +25,11 @@ const HeroSection = () => {
       <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/70 z-10"></div>
 
       {/* Container principal */}
-      <div className="relative z-20 container mx-auto px-4 py-32 sm:py-48">
+      <div className="relative z-20 container mx-auto px-4 py-20 sm:py-32">
         <div className="max-w-3xl mx-auto text-center">
           {/* Logo */}
           <div className="mb-0.5 flex justify-center">
-            <div className="relative w-[300px] h-[300px]">
+            <div className="relative w-[250px] h-[250px]">
               <Image
                 src="/images/up-logo-white.png"
                 alt="UP Carteiras Administradas"
@@ -53,9 +54,12 @@ const HeroSection = () => {
 
           {/* Botões de ação */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition duration-300 transform hover:scale-105">
+            <Link
+              href="/contato"
+              className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition duration-300 transform hover:scale-105"
+            >
               Entre em contato conosco
-            </button>
+            </Link>
             <button className="px-8 py-3 bg-transparent border-2 border-white text-white hover:bg-white/10 rounded-lg font-semibold transition duration-300 transform hover:scale-105">
               Conheça Nossos Serviços
             </button>
