@@ -3,15 +3,15 @@ import { EnvelopeIcon, PhoneIcon } from '@heroicons/react/24/outline';
 
 export default function ContatoPage() {
   return (
-    <main className="py-16 bg-gray-50">
+    <main className="pt-24 sm:pt-28 pb-16 bg-gray-50">
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto">
           {/* Cabeçalho */}
           <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">
+            <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
               Entre em Contato
             </h1>
-            <p className="text-lg text-gray-600">
+            <p className="text-base sm:text-lg text-gray-600">
               Estamos prontos para ajudar você a alcançar seus objetivos de investimento
             </p>
           </div>

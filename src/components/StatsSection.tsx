@@ -2,6 +2,7 @@
 
 import CountUp from 'react-countup';
 import { useInView } from 'react-intersection-observer';
+import Link from 'next/link';
 
 /**
  * Componente StatsSection
@@ -130,9 +131,12 @@ const StatsSection = () => {
 
           {/* Botão CTA */}
           <div className="mt-16 text-center">
-            <button className="px-8 py-4 bg-cyan-500 hover:bg-cyan-600 text-white rounded-lg font-semibold text-lg transition duration-300 transform hover:scale-105 hover:shadow-lg">
+            <Link
+              href="/contato"
+              className="px-8 py-4 bg-cyan-500 hover:bg-cyan-600 text-white rounded-lg font-semibold text-lg transition duration-300 transform hover:scale-105 hover:shadow-lg"
+            >
               Agende uma consultoria gratuita
-            </button>
+            </Link>
           </div>
         </div>
       </div>
