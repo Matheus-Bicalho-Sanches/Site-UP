@@ -2,12 +2,25 @@ import Image from 'next/image';
 
 const HeroSection = () => {
   return (
-    <div className="relative min-h-screen bg-gradient-to-r from-gray-900 to-gray-800">
+    <div className="relative min-h-screen">
+      {/* Imagem de fundo */}
+      <div className="absolute inset-0 z-0">
+        <Image
+          src="https://placehold.co/1920x1080/1a1a1a/ffffff"
+          alt="Background"
+          fill
+          priority
+          className="object-cover"
+          sizes="100vw"
+          quality={90}
+        />
+      </div>
+
       {/* Overlay de fundo com efeito de gradiente */}
-      <div className="absolute inset-0 bg-black/50"></div>
+      <div className="absolute inset-0 bg-gradient-to-r from-gray-900/95 to-gray-800/95 z-10"></div>
 
       {/* Container principal */}
-      <div className="relative container mx-auto px-4 py-32 sm:py-48">
+      <div className="relative z-20 container mx-auto px-4 py-32 sm:py-48">
         <div className="max-w-3xl mx-auto text-center">
           {/* Título principal */}
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-6">
