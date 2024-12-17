@@ -30,7 +30,7 @@ const HeroSection = () => {
           <div className="mb-0.5 flex justify-center">
             <div className="relative w-[300px] h-[300px]">
               <Image
-                src="/images/up-logo.png"
+                src="/images/up-logo-white.png"
                 alt="UP Carteiras Administradas"
                 fill
                 className="object-contain"

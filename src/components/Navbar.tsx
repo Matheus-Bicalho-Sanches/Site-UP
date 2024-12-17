@@ -44,7 +44,7 @@ const Navbar = () => {
               href="/"
               className={`transition-colors ${
                 isScrolled || isContactPage 
-                  ? 'text-gray-900 hover:text-cyan-600' 
+                  ? 'text-gray-900 hover:text-[#68BBE3]' 
                   : 'text-white hover:text-gray-200'
               }`}
             >
@@ -54,7 +54,7 @@ const Navbar = () => {
               href="/contato"
               className={`px-6 py-2 rounded-md transition-colors ${
                 isScrolled || isContactPage
-                  ? 'bg-cyan-500 text-white hover:bg-cyan-600' 
+                  ? 'bg-[#68BBE3] text-white hover:bg-[#5aa8cc]' 
                   : 'bg-white text-gray-900 hover:bg-gray-100'
               }`}
             >
