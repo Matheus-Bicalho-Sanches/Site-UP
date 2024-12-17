@@ -27,7 +27,7 @@ const HeroSection = () => {
       <div className="relative z-20 container mx-auto px-4 py-32 sm:py-48">
         <div className="max-w-3xl mx-auto text-center">
           {/* Logo */}
-          <div className="mb-2 flex justify-center">
+          <div className="mb-0.5 flex justify-center">
             <div className="relative w-[300px] h-[300px]">
               <Image
                 src="/images/up-logo.png"
@@ -47,7 +47,7 @@ const HeroSection = () => {
           </h1>
 
           {/* Subtítulo */}
-          <p className="text-xl sm:text-2xl text-gray-300 mb-8 leading-relaxed">
+          <p className="text-lg sm:text-xl md:text-2xl text-gray-300 mb-8 leading-relaxed">
             Gestão profissional de investimentos. Invista com segurança e comodidade.
           </p>
 

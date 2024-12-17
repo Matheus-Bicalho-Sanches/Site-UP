@@ -3,7 +3,8 @@
  * 
  * Componentes:
  * - HeroSection: Seção principal com logo, título e chamadas para ação
- * - ComparisonSection: Seção de comparação com outros sites
+ * - ComparisonSection: Seção de comparação entre carteiras e assessoria
+ * - AboutSection: Seção com informações detalhadas sobre a empresa
  * - ProcessSection: Seção que mostra o processo de trabalho
  * - StatsSection: Seção de estatísticas com números animados
  * - Footer: Rodapé com links importantes e informações de contato
@@ -14,6 +15,7 @@
  */
 
 import HeroSection from '@/components/HeroSection';
+import AboutSection from '@/components/AboutSection';
 import ComparisonSection from '@/components/ComparisonSection';
 import ProcessSection from '@/components/ProcessSection';
 import StatsSection from '@/components/StatsSection';
@@ -25,10 +27,15 @@ export default function Home() {
       <main>
         {/* Seção principal com apresentação da empresa */}
         <HeroSection />
-        <ComparisonSection />
-        
+              
+        {/* Seção com informações detalhadas sobre a empresa */}
+        <AboutSection />
+
         {/* Seção que mostra o processo de trabalho */}
         <ProcessSection />
+
+        {/* Seção de comparação entre carteiras e assessoria */}
+        <ComparisonSection />
         
         {/* Seção de estatísticas com números animados */}
         <StatsSection />
