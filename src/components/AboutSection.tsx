@@ -17,7 +17,7 @@ const AboutSection = () => {
               Excelência em Gestão de Patrimônio
             </h2>
             <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-              Nos dedicamos a proteger e fazer crescer o patrimônio de nossos clientes através de uma gestão profissional e personalizada com custo acessível.
+              Nos dedicamos a proteger e fazer crescer o patrimônio de nossos clientes através de uma gestão profissional com custo acessível.
             </p>
           </div>
 
