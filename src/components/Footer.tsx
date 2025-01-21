@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react';
+import { type FC } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 
@@ -11,7 +11,7 @@ import Image from 'next/image';
  * redes sociais e informações de contato.
  */
 
-const Footer = () => {
+const Footer: FC = () => {
   return (
     <footer className="bg-gray-900 pt-16 pb-8">
       <div className="container mx-auto px-4">
@@ -55,18 +55,23 @@ const Footer = () => {
                 <h3 className="text-white font-semibold mb-4">Compliance</h3>
                 <ul className="space-y-2">
                   <li>
-                    <Link href="#" className="text-gray-400 hover:text-cyan-500 transition">
-                      Código de Ética e Conduta Profissional
+                    <Link href="https://drive.google.com/file/d/1aEFaxsXRxuyQulNx9jPWwcOj3cmLrk72/view?usp=sharing" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-cyan-500 transition">
+                      Código de Ética
                     </Link>
                   </li>
                   <li>
-                    <Link href="#" className="text-gray-400 hover:text-cyan-500 transition">
-                      Política de Suitability
+                    <Link href="https://drive.google.com/file/d/15cjvaA0RfMsOrcgxIi0X4EMMiqSeyDZX/view?usp=sharing" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-cyan-500 transition">
+                      Manual de regras, procedimentos e controles Internos
                     </Link>
                   </li>
                   <li>
-                    <Link href="#" className="text-gray-400 hover:text-cyan-500 transition">
-                      Política de Investimentos
+                    <Link href="https://drive.google.com/file/d/15cjvaA0RfMsOrcgxIi0X4EMMiqSeyDZX/view?usp=sharing" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-cyan-500 transition">
+                      Política de Segregação de Atividades e confidencialidade
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="https://drive.google.com/file/d/1Lpf4kcUUBFD2YHMDLwJtASmgjJ8tuQjN/view?usp=sharing" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-cyan-500 transition">
+                      Política de Investimentos Pessoais
                     </Link>
                   </li>
                 </ul>
@@ -77,18 +82,23 @@ const Footer = () => {
                 <h3 className="text-white font-semibold mb-4 md:opacity-0">Compliance</h3>
                 <ul className="space-y-2">
                   <li>
-                    <Link href="#" className="text-gray-400 hover:text-cyan-500 transition">
-                      Política de Prevenção à Lavagem de Dinheiro
+                    <Link href="https://drive.google.com/file/d/1mOYnDR_vISZE26J0k6PgNUN3SUtdT_0a/view?usp=sharing" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-cyan-500 transition">
+                      Política de Gestão de Riscos
                     </Link>
                   </li>
                   <li>
-                    <Link href="#" className="text-gray-400 hover:text-cyan-500 transition">
-                      Política de Compliance e Controles Internos
+                    <Link href="https://drive.google.com/file/d/1Xt3n7hpVXnkbASd_Avqj3zJPsr7zQU4U/view?usp=sharing" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-cyan-500 transition">
+                      Política de Prevenção à Lavagem de Dinheiro e ao Financiamento do Terrorismo
                     </Link>
                   </li>
                   <li>
-                    <Link href="#" className="text-gray-400 hover:text-cyan-500 transition">
-                      Formulário de Referência
+                    <Link href="https://drive.google.com/file/d/1bMfIeBb6x-Bpwmadhdb7wc8LjlXnsEXO/view?usp=sharing" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-cyan-500 transition">
+                      Política de Rateio e Divisão de Ordens
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="https://drive.google.com/file/d/1FruG71GOjp2ak6DPdA3q37ZStfBF80pO/view?usp=sharing" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-cyan-500 transition">
+                      Formulário de referência
                     </Link>
                   </li>
                 </ul>
