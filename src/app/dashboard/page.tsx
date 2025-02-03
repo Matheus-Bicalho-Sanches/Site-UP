@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 
 export default function Dashboard() {
-  const { user: _user } = useAuth();
+  const { user } = useAuth();
   const [selectedPeriod, setSelectedPeriod] = useState('1M');
 
   return (
@@ -12,7 +12,7 @@ export default function Dashboard() {
       {/* Page Title */}
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-white">Dashboard</h1>
-        <p className="text-gray-400">Bem-vindo de volta!</p>
+        <p className="text-gray-400">Bem-vindo de volta, {user?.email?.split('@')[0]}!</p>
       </div>
 
       {/* Overview Cards */}
