@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import ProtectedRoute from '@/components/ProtectedRoute';
+import { auth } from '@/config/firebase';
 
 export default function DashboardLayout({
   children,
