@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 
 export default function Dashboard() {
-  const { user } = useAuth();
+  const { user: _user } = useAuth();
   const [selectedPeriod, setSelectedPeriod] = useState('1M');
 
   return (
