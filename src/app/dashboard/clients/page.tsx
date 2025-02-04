@@ -9,6 +9,8 @@ interface Client {
   id: string;
   name: string;
   phone: string;
+  brokers?: string[];
+  investedAmount?: number;
 }
 
 export default function ClientsPage() {
@@ -48,6 +50,14 @@ export default function ClientsPage() {
     return phone;
   };
 
+  const formatCurrency = (value?: number) => {
+    if (value === undefined || value === null) return 'Não informado';
+    return value.toLocaleString('pt-BR', {
+      style: 'currency',
+      currency: 'BRL'
+    });
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center h-[calc(100vh-4rem)]">
@@ -80,6 +90,8 @@ export default function ClientsPage() {
                 <tr className="text-left border-b border-gray-700">
                   <th className="px-6 py-3 text-gray-300">Nome</th>
                   <th className="px-6 py-3 text-gray-300">WhatsApp</th>
+                  <th className="px-6 py-3 text-gray-300">Corretoras</th>
+                  <th className="px-6 py-3 text-gray-300">Patrimônio</th>
                   <th className="px-6 py-3 text-gray-300">Ações</th>
                 </tr>
               </thead>
@@ -99,6 +111,18 @@ export default function ClientsPage() {
                       >
                         {formatPhoneNumber(client.phone)}
                       </a>
+                    </td>
+                    <td className="px-6 py-4 text-white">
+                      {client.brokers?.length ? (
+                        <span className="text-gray-300">
+                          {client.brokers.join(', ')}
+                        </span>
+                      ) : (
+                        <span className="text-gray-500">Não informado</span>
+                      )}
+                    </td>
+                    <td className="px-6 py-4 text-white">
+                      {formatCurrency(client.investedAmount)}
                     </td>
                     <td className="px-6 py-4">
                       <Link

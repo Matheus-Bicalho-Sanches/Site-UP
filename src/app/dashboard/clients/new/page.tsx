@@ -11,6 +11,8 @@ export default function NewClientPage() {
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
+    brokers: [''],
+    investedAmount: '',
   });
 
   const db = getFirestore(app);
@@ -20,17 +22,80 @@ export default function NewClientPage() {
     setLoading(true);
 
     try {
-      await addDoc(collection(db, 'clients'), {
-        ...formData,
-        createdAt: new Date(),
-      });
+      // Remove formatting from phone number before saving
+      const cleanPhone = formData.phone.replace(/\D/g, '');
+      
+      // Convert formatted amount to number
+      const cleanAmount = formData.investedAmount 
+        ? parseFloat(formData.investedAmount.replace(/[R$\s.]/g, '').replace(',', '.'))
+        : null;
 
+      const dataToSubmit = {
+        ...formData,
+        phone: cleanPhone,
+        brokers: formData.brokers.filter(broker => broker.trim() !== ''),
+        investedAmount: cleanAmount,
+        createdAt: new Date(),
+      };
+
+      await addDoc(collection(db, 'clients'), dataToSubmit);
       router.push('/dashboard/clients');
     } catch (error) {
       console.error('Error adding client:', error);
       alert('Erro ao adicionar cliente. Por favor, tente novamente.');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+    
+    if (value.length <= 11) {
+      // Format as (XX) XXXXX-XXXX
+      if (value.length > 2) {
+        value = `(${value.slice(0, 2)}) ${value.slice(2)}`;
+      }
+      if (value.length > 10) {
+        value = `${value.slice(0, 10)}-${value.slice(10)}`;
+      }
+      
+      setFormData({ ...formData, phone: value });
+    }
+  };
+
+  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+    
+    // Convert to number with 2 decimal places
+    const numberValue = parseInt(value) / 100;
+    
+    // Format as currency
+    if (value) {
+      const formatted = numberValue.toLocaleString('pt-BR', {
+        style: 'currency',
+        currency: 'BRL',
+      });
+      setFormData({ ...formData, investedAmount: formatted });
+    } else {
+      setFormData({ ...formData, investedAmount: '' });
+    }
+  };
+
+  const handleBrokerChange = (index: number, value: string) => {
+    const newBrokers = [...formData.brokers];
+    newBrokers[index] = value;
+    setFormData({ ...formData, brokers: newBrokers });
+  };
+
+  const addBrokerField = () => {
+    setFormData({ ...formData, brokers: [...formData.brokers, ''] });
+  };
+
+  const removeBrokerField = (index: number) => {
+    if (formData.brokers.length > 1) {
+      const newBrokers = formData.brokers.filter((_, i) => i !== index);
+      setFormData({ ...formData, brokers: newBrokers });
     }
   };
 
@@ -68,10 +133,60 @@ export default function NewClientPage() {
             <input
               type="tel"
               value={formData.phone}
-              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+              onChange={handlePhoneChange}
               placeholder="(00) 00000-0000"
               className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
               required
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1">
+              Corretoras
+            </label>
+            <div className="space-y-2">
+              {formData.brokers.map((broker, index) => (
+                <div key={index} className="flex gap-2">
+                  <input
+                    type="text"
+                    value={broker}
+                    onChange={(e) => handleBrokerChange(index, e.target.value)}
+                    placeholder="Nome da corretora"
+                    className="flex-1 px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                  />
+                  {formData.brokers.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => removeBrokerField(index)}
+                      className="px-3 py-2 text-red-500 hover:text-red-400"
+                    >
+                      Remover
+                    </button>
+                  )}
+                  {index === formData.brokers.length - 1 && (
+                    <button
+                      type="button"
+                      onClick={addBrokerField}
+                      className="px-3 py-2 text-cyan-500 hover:text-cyan-400"
+                    >
+                      Adicionar
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1">
+              Patrimônio Investido
+            </label>
+            <input
+              type="text"
+              value={formData.investedAmount}
+              onChange={handleAmountChange}
+              placeholder="R$ 0,00"
+              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
             />
           </div>
 
