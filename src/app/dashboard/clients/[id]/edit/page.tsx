@@ -1,13 +1,25 @@
 'use client'
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { collection, addDoc, getFirestore } from 'firebase/firestore';
+import { doc, getDoc, updateDoc, getFirestore } from 'firebase/firestore';
 import app from '@/config/firebase';
 
-export default function NewClientPage() {
+interface Client {
+  id: string;
+  name: string;
+  phone: string;
+  email: string;
+  brokers?: string[];
+  managementFee?: number;
+  performanceFee?: number;
+  investedAmount?: number;
+}
+
+export default function EditClientPage({ params }: { params: { id: string } }) {
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -20,34 +32,81 @@ export default function NewClientPage() {
 
   const db = getFirestore(app);
 
+  useEffect(() => {
+    const fetchClient = async () => {
+      try {
+        const docRef = doc(db, 'clients', params.id);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          const clientData = docSnap.data() as Client;
+          setFormData({
+            name: clientData.name,
+            phone: formatPhoneNumber(clientData.phone),
+            email: clientData.email || '',
+            brokers: clientData.brokers?.length ? clientData.brokers : [''],
+            managementFee: clientData.managementFee?.toString() || '',
+            performanceFee: clientData.performanceFee?.toString() || '',
+            investedAmount: clientData.investedAmount 
+              ? formatCurrency(clientData.investedAmount)
+              : '',
+          });
+        } else {
+          router.push('/dashboard/clients');
+        }
+      } catch (error) {
+        console.error('Error fetching client:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchClient();
+  }, [params.id, db, router]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
+    setSaving(true);
 
     try {
-      // Remove formatting from phone number before saving
       const cleanPhone = formData.phone.replace(/\D/g, '');
 
       const dataToSubmit = {
-        ...formData,
+        name: formData.name,
         phone: cleanPhone,
+        email: formData.email,
         brokers: formData.brokers.filter(broker => broker.trim() !== ''),
         managementFee: formData.managementFee ? parseFloat(formData.managementFee) : null,
         performanceFee: formData.performanceFee ? parseFloat(formData.performanceFee) : null,
         investedAmount: formData.investedAmount 
           ? parseFloat(formData.investedAmount.replace(/[R$\s.]/g, '').replace(',', '.'))
           : null,
-        createdAt: new Date(),
       };
 
-      await addDoc(collection(db, 'clients'), dataToSubmit);
-      router.push('/dashboard/clients');
+      const docRef = doc(db, 'clients', params.id);
+      await updateDoc(docRef, dataToSubmit);
+      router.push(`/dashboard/clients/${params.id}`);
     } catch (error) {
-      console.error('Error adding client:', error);
-      alert('Erro ao adicionar cliente. Por favor, tente novamente.');
+      console.error('Error updating client:', error);
+      alert('Erro ao atualizar cliente. Por favor, tente novamente.');
     } finally {
-      setLoading(false);
+      setSaving(false);
     }
+  };
+
+  const formatPhoneNumber = (phone: string) => {
+    const cleaned = phone.replace(/\D/g, '');
+    if (cleaned.length === 11) {
+      return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 7)}-${cleaned.slice(7)}`;
+    }
+    return phone;
+  };
+
+  const formatCurrency = (value: number) => {
+    return value.toLocaleString('pt-BR', {
+      style: 'currency',
+      currency: 'BRL'
+    });
   };
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -101,10 +160,18 @@ export default function NewClientPage() {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-[calc(100vh-4rem)]">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500"></div>
+      </div>
+    );
+  }
+
   return (
-    <div className="max-w-2xl mx-auto">
+    <div className="w-[95%] mx-auto">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-white">Novo Cliente</h1>
+        <h1 className="text-2xl font-bold text-white">Editar Cliente</h1>
         <button
           onClick={() => router.back()}
           className="text-gray-300 hover:text-white"
@@ -243,16 +310,16 @@ export default function NewClientPage() {
               type="button"
               onClick={() => router.back()}
               className="px-4 py-2 text-gray-300 hover:text-white"
-              disabled={loading}
+              disabled={saving}
             >
               Cancelar
             </button>
             <button
               type="submit"
               className="px-4 py-2 bg-cyan-500 text-white rounded hover:bg-cyan-600 disabled:opacity-50"
-              disabled={loading}
+              disabled={saving}
             >
-              {loading ? 'Adicionando...' : 'Adicionar Cliente'}
+              {saving ? 'Salvando...' : 'Salvar'}
             </button>
           </div>
         </form>

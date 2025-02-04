@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { collection, getDocs, getFirestore } from 'firebase/firestore';
 import app from '@/config/firebase';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 interface Client {
   id: string;
@@ -16,6 +17,7 @@ interface Client {
 export default function ClientsPage() {
   const [clients, setClients] = useState<Client[]>([]);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
   const db = getFirestore(app);
 
   useEffect(() => {
@@ -67,7 +69,7 @@ export default function ClientsPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto">
+    <div className="w-[95%] mx-auto">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-white">Clientes</h1>
         <Link
@@ -92,14 +94,14 @@ export default function ClientsPage() {
                   <th className="px-6 py-3 text-gray-300">WhatsApp</th>
                   <th className="px-6 py-3 text-gray-300">Corretoras</th>
                   <th className="px-6 py-3 text-gray-300">Patrimônio</th>
-                  <th className="px-6 py-3 text-gray-300">Ações</th>
                 </tr>
               </thead>
               <tbody>
                 {clients.map((client) => (
                   <tr
                     key={client.id}
-                    className="border-b border-gray-700 hover:bg-gray-700/50"
+                    onClick={() => router.push(`/dashboard/clients/${client.id}`)}
+                    className="border-b border-gray-700 hover:bg-gray-700/50 cursor-pointer"
                   >
                     <td className="px-6 py-4 text-white">{client.name}</td>
                     <td className="px-6 py-4 text-white">
@@ -108,6 +110,7 @@ export default function ClientsPage() {
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-cyan-500 hover:text-cyan-400"
+                        onClick={(e) => e.stopPropagation()} // Prevent row click when clicking WhatsApp link
                       >
                         {formatPhoneNumber(client.phone)}
                       </a>
@@ -123,14 +126,6 @@ export default function ClientsPage() {
                     </td>
                     <td className="px-6 py-4 text-white">
                       {formatCurrency(client.investedAmount)}
-                    </td>
-                    <td className="px-6 py-4">
-                      <Link
-                        href={`/dashboard/clients/${client.id}`}
-                        className="text-cyan-500 hover:text-cyan-400"
-                      >
-                        Ver detalhes
-                      </Link>
                     </td>
                   </tr>
                 ))}
