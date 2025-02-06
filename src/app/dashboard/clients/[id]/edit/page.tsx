@@ -14,6 +14,8 @@ interface Client {
   managementFee?: number;
   performanceFee?: number;
   investedAmount?: number;
+  lastMeeting?: string;
+  observations?: string;
 }
 
 export default function EditClientPage({ params }: { params: { id: string } }) {
@@ -28,6 +30,8 @@ export default function EditClientPage({ params }: { params: { id: string } }) {
     managementFee: '',
     performanceFee: '',
     investedAmount: '',
+    lastMeeting: '',
+    observations: '',
   });
 
   const db = getFirestore(app);
@@ -50,6 +54,8 @@ export default function EditClientPage({ params }: { params: { id: string } }) {
             investedAmount: clientData.investedAmount 
               ? formatCurrency(clientData.investedAmount)
               : '',
+            lastMeeting: clientData.lastMeeting || '',
+            observations: clientData.observations || '',
           });
         } else {
           router.push('/dashboard/clients');
@@ -81,6 +87,8 @@ export default function EditClientPage({ params }: { params: { id: string } }) {
         investedAmount: formData.investedAmount 
           ? parseFloat(formData.investedAmount.replace(/[R$\s.]/g, '').replace(',', '.'))
           : null,
+        lastMeeting: formData.lastMeeting,
+        observations: formData.observations,
       };
 
       const docRef = doc(db, 'clients', params.id);
@@ -303,6 +311,31 @@ export default function EditClientPage({ params }: { params: { id: string } }) {
                 className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
               />
             </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1">
+              Última Reunião
+            </label>
+            <input
+              type="date"
+              value={formData.lastMeeting}
+              onChange={(e) => setFormData({ ...formData, lastMeeting: e.target.value })}
+              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1">
+              Observações
+            </label>
+            <textarea
+              value={formData.observations}
+              onChange={(e) => setFormData({ ...formData, observations: e.target.value })}
+              rows={4}
+              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 resize-y"
+              placeholder="Adicione observações sobre o cliente..."
+            />
           </div>
 
           <div className="flex justify-end space-x-3">

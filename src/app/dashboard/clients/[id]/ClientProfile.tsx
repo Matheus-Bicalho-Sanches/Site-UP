@@ -14,6 +14,8 @@ interface Client {
   managementFee?: number;
   performanceFee?: number;
   investedAmount?: number;
+  lastMeeting?: string;
+  observations?: string;
 }
 
 export default function ClientProfilePageClient({ id }: { id: string }) {
@@ -94,82 +96,108 @@ export default function ClientProfilePageClient({ id }: { id: string }) {
         </div>
       </div>
 
-      <div className="bg-gray-800 rounded-lg shadow p-6 space-y-6">
-        {/* Nome */}
-        <div>
-          <label className="block text-sm font-medium text-gray-400 mb-1">Nome</label>
-          <p className="text-white text-lg">{client.name}</p>
-        </div>
+      <div className="bg-gray-800 rounded-lg shadow p-6">
+        <div className="grid grid-cols-2 gap-x-8 gap-y-6">
+          {/* Nome */}
+          <div>
+            <label className="block text-sm font-medium text-gray-400 mb-1">Nome</label>
+            <p className="text-white text-lg">{client.name}</p>
+          </div>
 
-        {/* WhatsApp */}
-        <div>
-          <label className="block text-sm font-medium text-gray-400 mb-1">WhatsApp</label>
-          <a
-            href={`https://wa.me/55${client.phone.replace(/\D/g, '')}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-cyan-500 hover:text-cyan-400 text-lg"
-          >
-            {formatPhoneNumber(client.phone)}
-          </a>
-        </div>
+          {/* WhatsApp */}
+          <div>
+            <label className="block text-sm font-medium text-gray-400 mb-1">WhatsApp</label>
+            <a
+              href={`https://wa.me/55${client.phone.replace(/\D/g, '')}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-cyan-500 hover:text-cyan-400 text-lg"
+            >
+              {formatPhoneNumber(client.phone)}
+            </a>
+          </div>
 
-        {/* Email */}
-        <div>
-          <label className="block text-sm font-medium text-gray-400 mb-1">E-mail</label>
-          <p className="text-white text-lg">
-            {client.email || <span className="text-gray-500">Não informado</span>}
-          </p>
-        </div>
+          {/* Email */}
+          <div>
+            <label className="block text-sm font-medium text-gray-400 mb-1">E-mail</label>
+            <p className="text-white text-lg">
+              {client.email || <span className="text-gray-500">Não informado</span>}
+            </p>
+          </div>
 
-        {/* Corretoras */}
-        <div>
-          <label className="block text-sm font-medium text-gray-400 mb-1">Corretoras</label>
-          <p className="text-white text-lg">
-            {client.brokers?.length ? (
-              client.brokers.join(', ')
-            ) : (
-              <span className="text-gray-500">Não informado</span>
-            )}
-          </p>
-        </div>
+          {/* Última Reunião */}
+          <div>
+            <label className="block text-sm font-medium text-gray-400 mb-1">
+              Última Reunião
+            </label>
+            <p className="text-white text-lg">
+              {client.lastMeeting || <span className="text-gray-500">Não informado</span>}
+            </p>
+          </div>
 
-        {/* Patrimônio Investido */}
-        <div>
-          <label className="block text-sm font-medium text-gray-400 mb-1">
-            Patrimônio Investido
-          </label>
-          <p className="text-white text-lg">
-            {formatCurrency(client.investedAmount)}
-          </p>
-        </div>
+          {/* Patrimônio Investido */}
+          <div>
+            <label className="block text-sm font-medium text-gray-400 mb-1">
+              Patrimônio Investido
+            </label>
+            <p className="text-white text-lg">
+              {formatCurrency(client.investedAmount)}
+            </p>
+          </div>
 
-        {/* Taxa de Administração */}
-        <div>
-          <label className="block text-sm font-medium text-gray-400 mb-1">
-            Taxa de Administração
-          </label>
-          <p className="text-white text-lg">
-            {client.managementFee !== undefined && client.managementFee !== null ? (
-              `${client.managementFee}%`
-            ) : (
-              <span className="text-gray-500">Não informado</span>
-            )}
-          </p>
-        </div>
+          {/* Taxa de Administração */}
+          <div>
+            <label className="block text-sm font-medium text-gray-400 mb-1">
+              Taxa de Administração
+            </label>
+            <p className="text-white text-lg">
+              {client.managementFee !== undefined && client.managementFee !== null ? (
+                `${client.managementFee}%`
+              ) : (
+                <span className="text-gray-500">Não informado</span>
+              )}
+            </p>
+          </div>
 
-        {/* Taxa de Performance */}
-        <div>
-          <label className="block text-sm font-medium text-gray-400 mb-1">
-            Taxa de Performance
-          </label>
-          <p className="text-white text-lg">
-            {client.performanceFee !== undefined && client.performanceFee !== null ? (
-              `${client.performanceFee}%`
-            ) : (
-              <span className="text-gray-500">Não informado</span>
-            )}
-          </p>
+          {/* Taxa de Performance */}
+          <div>
+            <label className="block text-sm font-medium text-gray-400 mb-1">
+              Taxa de Performance
+            </label>
+            <p className="text-white text-lg">
+              {client.performanceFee !== undefined && client.performanceFee !== null ? (
+                `${client.performanceFee}%`
+              ) : (
+                <span className="text-gray-500">Não informado</span>
+              )}
+            </p>
+          </div>
+
+          {/* Corretoras - Full width */}
+          <div className="col-span-2">
+            <label className="block text-sm font-medium text-gray-400 mb-1">Corretoras</label>
+            <p className="text-white text-lg">
+              {client.brokers?.length ? (
+                client.brokers.join(', ')
+              ) : (
+                <span className="text-gray-500">Não informado</span>
+              )}
+            </p>
+          </div>
+
+          {/* Observações - Full width with multiple lines */}
+          <div className="col-span-2 mt-2">
+            <label className="block text-sm font-medium text-gray-400 mb-1">Observações</label>
+            <div className="bg-gray-700/50 rounded-lg p-4 min-h-[120px]">
+              {client.observations ? (
+                <p className="text-white text-lg whitespace-pre-wrap">
+                  {client.observations}
+                </p>
+              ) : (
+                <p className="text-gray-500 text-lg">Não informado</p>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </div>
