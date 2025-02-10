@@ -1,3 +1,74 @@
 @tailwind base;
 @tailwind components;
-@tailwind utilities; 
+@tailwind utilities;
+
+/* ReactQuill Dark Theme Customization */
+.ql-snow.ql-toolbar {
+  border-color: rgb(55, 65, 81) !important; /* gray-700 */
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
+  background-color: rgb(31, 41, 55) !important; /* gray-800 */
+}
+
+.ql-container.ql-snow {
+  border-color: rgb(55, 65, 81) !important; /* gray-700 */
+  border-bottom-left-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
+}
+
+/* Make toolbar icons white */
+.ql-snow .ql-stroke {
+  stroke: #fff !important;
+}
+
+.ql-snow .ql-fill {
+  fill: #fff !important;
+}
+
+.ql-snow .ql-picker {
+  color: #fff !important;
+}
+
+/* Toolbar dropdown background */
+.ql-snow .ql-picker-options {
+  background-color: rgb(31, 41, 55) !important; /* gray-800 */
+  border-color: rgb(55, 65, 81) !important; /* gray-700 */
+}
+
+/* Toolbar dropdown text */
+.ql-snow .ql-picker.ql-expanded .ql-picker-options .ql-picker-item {
+  color: #fff !important;
+}
+
+/* Toolbar dropdown hover */
+.ql-snow .ql-picker-options .ql-picker-item:hover {
+  color: rgb(14, 165, 233) !important; /* cyan-500 */
+}
+
+/* Active state for toolbar buttons */
+.ql-snow .ql-active {
+  color: rgb(14, 165, 233) !important; /* cyan-500 */
+}
+
+.ql-snow .ql-active .ql-stroke {
+  stroke: rgb(14, 165, 233) !important; /* cyan-500 */
+}
+
+.ql-snow .ql-active .ql-fill {
+  fill: rgb(14, 165, 233) !important; /* cyan-500 */
+}
+
+/* Hover states */
+.ql-snow .ql-picker-label:hover,
+.ql-snow .ql-picker-label:hover .ql-stroke {
+  color: rgb(14, 165, 233) !important; /* cyan-500 */
+  stroke: rgb(14, 165, 233) !important; /* cyan-500 */
+}
+
+.ql-snow button:hover .ql-stroke {
+  stroke: rgb(14, 165, 233) !important; /* cyan-500 */
+}
+
+.ql-snow button:hover .ql-fill {
+  fill: rgb(14, 165, 233) !important; /* cyan-500 */
+} 

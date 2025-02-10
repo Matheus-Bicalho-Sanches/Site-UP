@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { doc, getDoc, getFirestore } from 'firebase/firestore';
 import app from '@/config/firebase';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 interface Client {
   id: string;
@@ -15,7 +16,71 @@ interface Client {
   performanceFee?: number;
   investedAmount?: number;
   lastMeeting?: string;
+  nextMeeting?: string;
   observations?: string;
+}
+
+interface SectionProps {
+  title: string;
+  children: React.ReactNode;
+  defaultExpanded?: boolean;
+  onEdit?: () => void;
+}
+
+function Section({ title, children, defaultExpanded = false, onEdit }: SectionProps) {
+  const [isExpanded, setIsExpanded] = useState(defaultExpanded);
+
+  return (
+    <div className="bg-gray-800 rounded-lg shadow mb-6">
+      <div 
+        className="p-4 flex justify-between items-center cursor-pointer hover:bg-gray-700/50 transition-colors"
+        onClick={() => setIsExpanded(!isExpanded)}
+      >
+        <h2 className="text-lg font-semibold text-white">{title}</h2>
+        <div className="flex items-center gap-2">
+          {onEdit && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation(); // Prevent section toggle when clicking edit
+                onEdit();
+              }}
+              className="p-1.5 text-gray-400 hover:text-cyan-500 transition-colors"
+              title="Editar"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                />
+              </svg>
+            </button>
+          )}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className={`h-5 w-5 transform transition-transform text-gray-400 ${isExpanded ? 'rotate-180' : ''}`}
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+        </div>
+      </div>
+      {isExpanded && (
+        <div className="p-6 border-t border-gray-700">
+          {children}
+        </div>
+      )}
+    </div>
+  );
 }
 
 export default function ClientProfilePageClient({ id }: { id: string }) {
@@ -80,126 +145,187 @@ export default function ClientProfilePageClient({ id }: { id: string }) {
     <div className="w-[95%] mx-auto">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-white">Perfil do Cliente</h1>
-        <div className="flex gap-4">
-          <button
-            onClick={() => router.push(`/dashboard/clients/${id}/edit`)}
-            className="px-4 py-2 bg-cyan-500 text-white rounded hover:bg-cyan-600"
-          >
-            Editar
-          </button>
-          <button
-            onClick={() => router.back()}
-            className="text-gray-300 hover:text-white"
-          >
-            Voltar
-          </button>
-        </div>
+        <button
+          onClick={() => router.back()}
+          className="text-gray-300 hover:text-white"
+        >
+          Voltar
+        </button>
       </div>
 
-      <div className="bg-gray-800 rounded-lg shadow p-6">
-        <div className="grid grid-cols-2 gap-x-8 gap-y-6">
-          {/* Nome */}
-          <div>
-            <label className="block text-sm font-medium text-gray-400 mb-1">Nome</label>
-            <p className="text-white text-lg">{client.name}</p>
-          </div>
+      {/* Informações Básicas */}
+      <Section 
+        title="Informações Básicas" 
+        defaultExpanded={true}
+        onEdit={() => router.push(`/dashboard/clients/${id}/edit`)}
+      >
+        <div className="space-y-0">
+          <div className="grid grid-cols-2 gap-x-8 gap-y-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-400 mb-1">Nome</label>
+              <p className="text-white text-lg">{client.name}</p>
+            </div>
 
-          {/* WhatsApp */}
-          <div>
-            <label className="block text-sm font-medium text-gray-400 mb-1">WhatsApp</label>
-            <a
-              href={`https://wa.me/55${client.phone.replace(/\D/g, '')}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-cyan-500 hover:text-cyan-400 text-lg"
-            >
-              {formatPhoneNumber(client.phone)}
-            </a>
-          </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-400 mb-1">WhatsApp</label>
+              <a
+                href={`https://wa.me/55${client.phone.replace(/\D/g, '')}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-cyan-500 hover:text-cyan-400 text-lg"
+              >
+                {formatPhoneNumber(client.phone)}
+              </a>
+            </div>
 
-          {/* Email */}
-          <div>
-            <label className="block text-sm font-medium text-gray-400 mb-1">E-mail</label>
-            <p className="text-white text-lg">
-              {client.email || <span className="text-gray-500">Não informado</span>}
-            </p>
-          </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-400 mb-1">E-mail</label>
+              <p className="text-white text-lg">
+                {client.email || <span className="text-gray-500">Não informado</span>}
+              </p>
+            </div>
 
-          {/* Última Reunião */}
-          <div>
-            <label className="block text-sm font-medium text-gray-400 mb-1">
-              Última Reunião
-            </label>
-            <p className="text-white text-lg">
-              {client.lastMeeting || <span className="text-gray-500">Não informado</span>}
-            </p>
-          </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-400 mb-1">
+                Última Reunião
+              </label>
+              <p className="text-white text-lg">
+                {client.lastMeeting || <span className="text-gray-500">Não informado</span>}
+              </p>
+            </div>
 
-          {/* Patrimônio Investido */}
-          <div>
-            <label className="block text-sm font-medium text-gray-400 mb-1">
-              Patrimônio Investido
-            </label>
-            <p className="text-white text-lg">
-              {formatCurrency(client.investedAmount)}
-            </p>
-          </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-400 mb-1">
+                Próxima Reunião
+              </label>
+              <p className="text-white text-lg">
+                {client.nextMeeting || <span className="text-gray-500">Não informado</span>}
+              </p>
+            </div>
 
-          {/* Taxa de Administração */}
-          <div>
-            <label className="block text-sm font-medium text-gray-400 mb-1">
-              Taxa de Administração
-            </label>
-            <p className="text-white text-lg">
-              {client.managementFee !== undefined && client.managementFee !== null ? (
-                `${client.managementFee}%`
-              ) : (
-                <span className="text-gray-500">Não informado</span>
-              )}
-            </p>
-          </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-400 mb-1">
+                Histórico de Conversas
+              </label>
+              <Link
+                href={`/dashboard/clients/${id}/conversations`}
+                className="text-cyan-500 hover:text-cyan-400 text-lg"
+              >
+                Ver histórico
+              </Link>
+            </div>
 
-          {/* Taxa de Performance */}
-          <div>
-            <label className="block text-sm font-medium text-gray-400 mb-1">
-              Taxa de Performance
-            </label>
-            <p className="text-white text-lg">
-              {client.performanceFee !== undefined && client.performanceFee !== null ? (
-                `${client.performanceFee}%`
-              ) : (
-                <span className="text-gray-500">Não informado</span>
-              )}
-            </p>
-          </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-400 mb-1">
+                Patrimônio Investido
+              </label>
+              <p className="text-white text-lg">
+                {formatCurrency(client.investedAmount)}
+              </p>
+            </div>
 
-          {/* Corretoras - Full width */}
-          <div className="col-span-2">
-            <label className="block text-sm font-medium text-gray-400 mb-1">Corretoras</label>
-            <p className="text-white text-lg">
-              {client.brokers?.length ? (
-                client.brokers.join(', ')
-              ) : (
-                <span className="text-gray-500">Não informado</span>
-              )}
-            </p>
-          </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-400 mb-1">
+                Taxa de Administração
+              </label>
+              <p className="text-white text-lg">
+                {client.managementFee !== undefined && client.managementFee !== null ? (
+                  `${client.managementFee}%`
+                ) : (
+                  <span className="text-gray-500">Não informado</span>
+                )}
+              </p>
+            </div>
 
-          {/* Observações - Full width with multiple lines */}
-          <div className="col-span-2 mt-2">
-            <label className="block text-sm font-medium text-gray-400 mb-1">Observações</label>
-            <div className="bg-gray-700/50 rounded-lg p-4 min-h-[120px]">
-              {client.observations ? (
-                <p className="text-white text-lg whitespace-pre-wrap">
-                  {client.observations}
-                </p>
-              ) : (
-                <p className="text-gray-500 text-lg">Não informado</p>
-              )}
+            <div>
+              <label className="block text-sm font-medium text-gray-400 mb-1">
+                Taxa de Performance
+              </label>
+              <p className="text-white text-lg">
+                {client.performanceFee !== undefined && client.performanceFee !== null ? (
+                  `${client.performanceFee}%`
+                ) : (
+                  <span className="text-gray-500">Não informado</span>
+                )}
+              </p>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-400 mb-1">Corretoras</label>
+              <p className="text-white text-lg">
+                {client.brokers?.length ? (
+                  client.brokers.join(', ')
+                ) : (
+                  <span className="text-gray-500">Não informado</span>
+                )}
+              </p>
+            </div>
+
+            <div className="col-span-2">
+              <label className="block text-sm font-medium text-gray-400 mb-1">Observações</label>
+              <div className="bg-gray-700/50 rounded-lg p-4 min-h-[120px]">
+                {client.observations ? (
+                  <p className="text-white text-lg whitespace-pre-wrap">
+                    {client.observations}
+                  </p>
+                ) : (
+                  <p className="text-gray-500 text-lg">Não informado</p>
+                )}
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </Section>
+
+      {/* Alocação */}
+      <Section 
+        title="Alocação" 
+        onEdit={() => router.push(`/dashboard/clients/${id}/allocation/edit`)}
+      >
+        <div className="grid grid-cols-2 gap-x-8 gap-y-6">
+          <div>
+            <label className="block text-sm font-medium text-gray-400 mb-1">Renda Fixa</label>
+            <p className="text-white text-lg">
+              <span className="text-gray-500">Não informado</span>
+            </p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-400 mb-1">Renda Variável</label>
+            <p className="text-white text-lg">
+              <span className="text-gray-500">Não informado</span>
+            </p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-400 mb-1">Fundos Imobiliários</label>
+            <p className="text-white text-lg">
+              <span className="text-gray-500">Não informado</span>
+            </p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-400 mb-1">Internacional</label>
+            <p className="text-white text-lg">
+              <span className="text-gray-500">Não informado</span>
+            </p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-400 mb-1">Criptoativos</label>
+            <p className="text-white text-lg">
+              <span className="text-gray-500">Não informado</span>
+            </p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-400 mb-1">Última Atualização</label>
+            <p className="text-white text-lg">
+              <span className="text-gray-500">Não informado</span>
+            </p>
+          </div>
+        </div>
+      </Section>
     </div>
   );
 } 
