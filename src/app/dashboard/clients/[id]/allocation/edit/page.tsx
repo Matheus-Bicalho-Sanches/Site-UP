@@ -84,7 +84,12 @@ export default function AllocationEditPage({ params }: { params: { id: string } 
     return Number(value.replace(/[^\d,-]/g, '').replace(',', '.')) || 0;
   };
 
-  const handleInvestmentChange = (assetIndex: number, investmentIndex: number, field: keyof Investment, value: string | number) => {
+  const handleInvestmentChange = (
+    assetIndex: number, 
+    investmentIndex: number, 
+    field: keyof Investment, 
+    value: string
+  ) => {
     const newAssets = [...assets];
     if (field === 'value') {
       // Remove all non-numeric characters
@@ -95,12 +100,12 @@ export default function AllocationEditPage({ params }: { params: { id: string } 
 
       newAssets[assetIndex].investments[investmentIndex] = {
         ...newAssets[assetIndex].investments[investmentIndex],
-        [field]: finalValue
+        value: finalValue
       };
     } else {
       newAssets[assetIndex].investments[investmentIndex] = {
         ...newAssets[assetIndex].investments[investmentIndex],
-        [field]: value
+        name: value
       };
     }
     setAssets(newAssets);
