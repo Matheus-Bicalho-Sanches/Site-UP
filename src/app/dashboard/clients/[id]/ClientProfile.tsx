@@ -280,50 +280,35 @@ export default function ClientProfilePageClient({ id }: { id: string }) {
       {/* Alocação */}
       <Section 
         title="Alocação" 
+        defaultExpanded={true}
         onEdit={() => router.push(`/dashboard/clients/${id}/allocation/edit`)}
       >
-        <div className="grid grid-cols-2 gap-x-8 gap-y-6">
-          <div>
-            <label className="block text-sm font-medium text-gray-400 mb-1">Renda Fixa</label>
-            <p className="text-white text-lg">
-              <span className="text-gray-500">Não informado</span>
-            </p>
+        <div className="space-y-4">
+          <div className="flex justify-between items-center">
+            <Link
+              href={`/dashboard/clients/${id}/allocation`}
+              className="text-cyan-500 hover:text-cyan-400 text-lg flex items-center gap-2"
+            >
+              Ver detalhes da alocação
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+            </Link>
           </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-400 mb-1">Renda Variável</label>
-            <p className="text-white text-lg">
-              <span className="text-gray-500">Não informado</span>
-            </p>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-400 mb-1">Fundos Imobiliários</label>
-            <p className="text-white text-lg">
-              <span className="text-gray-500">Não informado</span>
-            </p>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-400 mb-1">Internacional</label>
-            <p className="text-white text-lg">
-              <span className="text-gray-500">Não informado</span>
-            </p>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-400 mb-1">Criptoativos</label>
-            <p className="text-white text-lg">
-              <span className="text-gray-500">Não informado</span>
-            </p>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-400 mb-1">Última Atualização</label>
-            <p className="text-white text-lg">
-              <span className="text-gray-500">Não informado</span>
-            </p>
-          </div>
+          <p className="text-gray-400">
+            Gerencie a alocação mensal dos ativos do cliente, incluindo valores e histórico.
+          </p>
         </div>
       </Section>
     </div>
