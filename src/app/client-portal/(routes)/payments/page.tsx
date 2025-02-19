@@ -1,6 +1,17 @@
 'use client'
 
+import { useState } from 'react'
+import { CreditCardModal } from '@/components/credit-card-modal'
+
 export default function PaymentsPage() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [hasCard, setHasCard] = useState(false);
+
+  const handleCardSuccess = (tokenizedCard: any) => {
+    // TODO: Salvar token no Firestore
+    setHasCard(true);
+  };
+
   return (
     <div className="container mx-auto py-6 space-y-6">
       <h1 className="text-2xl font-bold text-white">Pagamentos</h1>
@@ -15,6 +26,8 @@ export default function PaymentsPage() {
             <input 
               type="checkbox" 
               id="card-registered"
+              checked={hasCard}
+              readOnly
               className="w-4 h-4 rounded border-gray-700 bg-gray-800"
             />
             <label htmlFor="card-registered" className="text-sm text-gray-400">
@@ -22,11 +35,20 @@ export default function PaymentsPage() {
             </label>
           </div>
           
-          <button className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors">
+          <button 
+            onClick={() => setIsModalOpen(true)}
+            className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
+          >
             Cadastrar cartão
           </button>
         </div>
       </div>
+
+      <CreditCardModal 
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSuccess={handleCardSuccess}
+      />
 
       {/* Histórico de Cobranças */}
       <div className="bg-[#1C2127] rounded-lg shadow p-6">
