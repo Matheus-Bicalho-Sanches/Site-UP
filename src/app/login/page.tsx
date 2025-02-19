@@ -5,6 +5,8 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '@/config/firebase';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import { collection, query, where, getDocs, getFirestore } from 'firebase/firestore';
+import app from '@/config/firebase';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -12,6 +14,7 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const db = getFirestore(app);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,7 +23,19 @@ export default function LoginPage() {
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      router.push('/dashboard'); // Redirect to dashboard after successful login
+      
+      // Check if user is a client
+      const clientsRef = collection(db, 'clients');
+      const q = query(clientsRef, where('email', '==', email));
+      const querySnapshot = await getDocs(q);
+
+      if (!querySnapshot.empty) {
+        // User is a client, redirect to client portal
+        router.push('/client-portal');
+      } else {
+        // User is an employee, redirect to dashboard
+        router.push('/dashboard');
+      }
     } catch (err) {
       setError('Falha no login. Por favor, verifique suas credenciais.');
       console.error(err);

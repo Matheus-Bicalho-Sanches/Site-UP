@@ -29,6 +29,31 @@ service cloud.firestore {
       allow read, write: if isAuthenticated();
     }
 
+    // Payment rules
+    match /payments/{paymentId} {
+      allow read: if request.auth != null;
+      
+      allow create: if request.auth != null
+        && request.resource.data.clientId is string
+        && request.resource.data.date is string
+        && request.resource.data.dueDate is string
+        && request.resource.data.value is number
+        && request.resource.data.value > 0
+        && request.resource.data.status in ['pending', 'paid', 'overdue']
+        && request.resource.data.createdAt is string;
+      
+      allow update: if request.auth != null
+        && request.resource.data.clientId == resource.data.clientId
+        && request.resource.data.date is string
+        && request.resource.data.dueDate is string
+        && request.resource.data.value is number
+        && request.resource.data.value > 0
+        && request.resource.data.status in ['pending', 'paid', 'overdue']
+        && request.resource.data.updatedAt is string;
+      
+      allow delete: if request.auth != null;
+    }
+
     // Default deny all
     match /{document=**} {
       allow read, write: if false;
