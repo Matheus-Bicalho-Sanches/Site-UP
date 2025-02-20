@@ -23,7 +23,17 @@ export interface TokenizeCardData {
     expiryMonth: string;
     expiryYear: string;
     ccv: string;
-  }
+  };
+  creditCardHolderInfo?: {
+    name: string;
+    email: string;
+    cpfCnpj: string;
+    postalCode?: string;
+    addressNumber?: string;
+    addressComplement?: string;
+    phone?: string;
+    mobilePhone?: string;
+  };
 }
 
 export interface TokenizedCardResponse {

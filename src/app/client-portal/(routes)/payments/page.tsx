@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { getAuth } from 'firebase/auth'
-import { getFirestore, collection, query, where, getDocs } from 'firebase/firestore'
+import { getFirestore, collection, query, where, getDocs, doc, updateDoc } from 'firebase/firestore'
 import { CreditCardModal } from '@/components/credit-card-modal'
 import app from '@/config/firebase'
 
@@ -11,6 +11,7 @@ export default function PaymentsPage() {
   const [hasCard, setHasCard] = useState(false);
   const [asaasId, setAsaasId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [clientDocId, setClientDocId] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchClientData = async () => {
@@ -19,15 +20,16 @@ export default function PaymentsPage() {
 
       if (auth.currentUser) {
         try {
-          // Buscar documento do cliente onde uid é igual ao UID do usuário
           const clientsRef = collection(db, 'clients');
           const q = query(clientsRef, where('uid', '==', auth.currentUser.uid));
           const querySnapshot = await getDocs(q);
 
           if (!querySnapshot.empty) {
-            const clientData = querySnapshot.docs[0].data();
+            const clientDoc = querySnapshot.docs[0];
+            const clientData = clientDoc.data();
             setAsaasId(clientData.asaasId);
             setHasCard(!!clientData.cardTokenId);
+            setClientDocId(clientDoc.id);
           } else {
             console.error('Cliente não encontrado');
           }
@@ -44,14 +46,13 @@ export default function PaymentsPage() {
 
   const handleCardSuccess = async (tokenizedCard: any) => {
     try {
-      const auth = getAuth(app);
       const db = getFirestore(app);
 
-      if (auth.currentUser) {
-        // Atualizar o documento do cliente com o token do cartão
-        await updateDoc(doc(db, 'clients', auth.currentUser.uid), {
+      if (clientDocId) {
+        await updateDoc(doc(db, 'clients', clientDocId), {
           cardTokenId: tokenizedCard.creditCardToken,
-          lastCardDigits: tokenizedCard.creditCardNumber.slice(-4)
+          lastCardDigits: tokenizedCard.creditCardNumber,
+          cardBrand: tokenizedCard.creditCardBrand
         });
 
         setHasCard(true);
