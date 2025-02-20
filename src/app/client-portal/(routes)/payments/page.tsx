@@ -5,6 +5,17 @@ import { getAuth } from 'firebase/auth'
 import { getFirestore, collection, query, where, getDocs, doc, updateDoc } from 'firebase/firestore'
 import { CreditCardModal } from '@/components/credit-card-modal'
 import app from '@/config/firebase'
+import { formatCurrency } from '@/lib/utils'
+
+interface Payment {
+  id: string;
+  date: string;
+  dueDate: string;
+  description: string;
+  status: string;
+  value: number;
+  createdAt: string;
+}
 
 export default function PaymentsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -12,6 +23,7 @@ export default function PaymentsPage() {
   const [asaasId, setAsaasId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [clientDocId, setClientDocId] = useState<string | null>(null);
+  const [payments, setPayments] = useState<Payment[]>([]);
 
   useEffect(() => {
     const fetchClientData = async () => {
@@ -30,11 +42,26 @@ export default function PaymentsPage() {
             setAsaasId(clientData.asaasId);
             setHasCard(!!clientData.cardTokenId);
             setClientDocId(clientDoc.id);
+
+            const paymentsRef = collection(db, 'payments');
+            const paymentsQuery = query(paymentsRef, where('clientId', '==', clientDoc.id));
+            const paymentsSnapshot = await getDocs(paymentsQuery);
+            
+            const paymentsData = paymentsSnapshot.docs.map(doc => ({
+              id: doc.id,
+              ...doc.data()
+            })) as Payment[];
+
+            const sortedPayments = paymentsData.sort((a, b) => 
+              new Date(b.date).getTime() - new Date(a.date).getTime()
+            );
+
+            setPayments(sortedPayments);
           } else {
             console.error('Cliente não encontrado');
           }
         } catch (error) {
-          console.error('Erro ao buscar dados do cliente:', error);
+          console.error('Erro ao buscar dados:', error);
         } finally {
           setLoading(false);
         }
@@ -61,6 +88,28 @@ export default function PaymentsPage() {
       console.error('Erro ao salvar token do cartão:', error);
       alert('Erro ao salvar dados do cartão. Tente novamente.');
     }
+  };
+
+  const getStatusBadgeStyle = (status: string) => {
+    switch (status.toLowerCase()) {
+      case 'pending':
+        return 'bg-yellow-500/10 text-yellow-400';
+      case 'paid':
+        return 'bg-green-500/10 text-green-400';
+      case 'overdue':
+        return 'bg-red-500/10 text-red-400';
+      default:
+        return 'bg-gray-500/10 text-gray-400';
+    }
+  };
+
+  const getStatusText = (status: string) => {
+    const statusMap: { [key: string]: string } = {
+      'pending': 'Pendente',
+      'paid': 'Pago',
+      'overdue': 'Vencido'
+    };
+    return statusMap[status.toLowerCase()] || status;
   };
 
   if (loading) {
@@ -127,26 +176,30 @@ export default function PaymentsPage() {
                 </tr>
               </thead>
               <tbody>
-                <tr className="border-b border-gray-800">
-                  <td className="py-3 px-4 text-gray-300">10/03/2024</td>
-                  <td className="py-3 px-4 text-gray-300">Mensalidade Março/2024</td>
-                  <td className="py-3 px-4">
-                    <span className="bg-green-500/10 text-green-400 px-2 py-1 rounded-full text-sm">
-                      Pago
-                    </span>
-                  </td>
-                  <td className="py-3 px-4 text-right text-gray-300">R$ 199,90</td>
-                </tr>
-                <tr className="border-b border-gray-800">
-                  <td className="py-3 px-4 text-gray-300">10/02/2024</td>
-                  <td className="py-3 px-4 text-gray-300">Mensalidade Fevereiro/2024</td>
-                  <td className="py-3 px-4">
-                    <span className="bg-green-500/10 text-green-400 px-2 py-1 rounded-full text-sm">
-                      Pago
-                    </span>
-                  </td>
-                  <td className="py-3 px-4 text-right text-gray-300">R$ 199,90</td>
-                </tr>
+                {payments.length > 0 ? (
+                  payments.map(payment => (
+                    <tr key={payment.id} className="border-b border-gray-800">
+                      <td className="py-3 px-4 text-gray-300">
+                        {new Date(payment.date).toLocaleDateString('pt-BR')}
+                      </td>
+                      <td className="py-3 px-4 text-gray-300">{payment.description}</td>
+                      <td className="py-3 px-4">
+                        <span className={`px-2 py-1 rounded-full text-sm ${getStatusBadgeStyle(payment.status)}`}>
+                          {getStatusText(payment.status)}
+                        </span>
+                      </td>
+                      <td className="py-3 px-4 text-right text-gray-300">
+                        {formatCurrency(payment.value)}
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={4} className="py-4 text-center text-gray-400">
+                      Nenhum pagamento encontrado
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
