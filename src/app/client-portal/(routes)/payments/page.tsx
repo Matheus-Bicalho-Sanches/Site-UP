@@ -1,16 +1,74 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { getAuth } from 'firebase/auth'
+import { getFirestore, collection, query, where, getDocs } from 'firebase/firestore'
 import { CreditCardModal } from '@/components/credit-card-modal'
+import app from '@/config/firebase'
 
 export default function PaymentsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [hasCard, setHasCard] = useState(false);
+  const [asaasId, setAsaasId] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const handleCardSuccess = (tokenizedCard: any) => {
-    // TODO: Salvar token no Firestore
-    setHasCard(true);
+  useEffect(() => {
+    const fetchClientData = async () => {
+      const auth = getAuth(app);
+      const db = getFirestore(app);
+
+      if (auth.currentUser) {
+        try {
+          // Buscar documento do cliente onde uid é igual ao UID do usuário
+          const clientsRef = collection(db, 'clients');
+          const q = query(clientsRef, where('uid', '==', auth.currentUser.uid));
+          const querySnapshot = await getDocs(q);
+
+          if (!querySnapshot.empty) {
+            const clientData = querySnapshot.docs[0].data();
+            setAsaasId(clientData.asaasId);
+            setHasCard(!!clientData.cardTokenId);
+          } else {
+            console.error('Cliente não encontrado');
+          }
+        } catch (error) {
+          console.error('Erro ao buscar dados do cliente:', error);
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchClientData();
+  }, []);
+
+  const handleCardSuccess = async (tokenizedCard: any) => {
+    try {
+      const auth = getAuth(app);
+      const db = getFirestore(app);
+
+      if (auth.currentUser) {
+        // Atualizar o documento do cliente com o token do cartão
+        await updateDoc(doc(db, 'clients', auth.currentUser.uid), {
+          cardTokenId: tokenizedCard.creditCardToken,
+          lastCardDigits: tokenizedCard.creditCardNumber.slice(-4)
+        });
+
+        setHasCard(true);
+      }
+    } catch (error) {
+      console.error('Erro ao salvar token do cartão:', error);
+      alert('Erro ao salvar dados do cartão. Tente novamente.');
+    }
   };
+
+  if (loading) {
+    return <div>Carregando...</div>;
+  }
+
+  if (!asaasId) {
+    return <div>Erro ao carregar dados do cliente.</div>;
+  }
 
   return (
     <div className="container mx-auto py-6 space-y-6">
@@ -48,6 +106,7 @@ export default function PaymentsPage() {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSuccess={handleCardSuccess}
+        customerId={asaasId}
       />
 
       {/* Histórico de Cobranças */}

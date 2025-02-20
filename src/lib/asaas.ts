@@ -26,6 +26,13 @@ export interface TokenizeCardData {
   }
 }
 
+export interface TokenizedCardResponse {
+  creditCardToken: string;
+  creditCardNumber: string;
+  creditCardBrand: string;
+  creditCardToken: string;
+}
+
 const ASAAS_BASE_URL = process.env.ASAAS_ENVIRONMENT === 'production'
   ? 'https://api.asaas.com/v3'
   : 'https://api-sandbox.asaas.com/v3';

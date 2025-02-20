@@ -1,15 +1,16 @@
 'use client'
 
 import { useState } from 'react'
-import { asaasClient } from '@/lib/asaas'
+import { tokenizeCard } from '@/lib/asaas'
 
 interface CreditCardModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: (tokenizedCard: any) => void;
+  customerId: string; // Novo prop para o ID do cliente no Asaas
 }
 
-export function CreditCardModal({ isOpen, onClose, onSuccess }: CreditCardModalProps) {
+export function CreditCardModal({ isOpen, onClose, onSuccess, customerId }: CreditCardModalProps) {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     holderName: '',
@@ -50,18 +51,37 @@ export function CreditCardModal({ isOpen, onClose, onSuccess }: CreditCardModalP
     setLoading(true);
 
     try {
-      // Remove espaços do número do cartão antes de enviar
+      // Remove espaços do número do cartão
       const cardData = {
-        ...formData,
-        number: formData.number.replace(/\s/g, '')
+        customer: customerId, // ID do cliente no Asaas
+        creditCard: {
+          holderName: formData.holderName,
+          number: formData.number.replace(/\s/g, ''),
+          expiryMonth: formData.expiryMonth,
+          expiryYear: formData.expiryYear,
+          ccv: formData.ccv
+        }
       };
 
-      const tokenizedCard = await asaasClient.tokenizeCard(cardData);
+      const response = await fetch('/api/asaas/tokenize', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(cardData)
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Erro ao cadastrar cartão');
+      }
+
+      const tokenizedCard = await response.json();
       onSuccess(tokenizedCard);
       onClose();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Erro ao tokenizar cartão:', error);
-      alert('Erro ao cadastrar cartão. Verifique os dados e tente novamente.');
+      alert(error.message || 'Erro ao cadastrar cartão. Verifique os dados e tente novamente.');
     } finally {
       setLoading(false);
     }
