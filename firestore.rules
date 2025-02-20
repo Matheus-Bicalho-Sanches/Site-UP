@@ -12,10 +12,17 @@ service cloud.firestore {
       return request.auth.uid == userId;
     }
 
+    // Função auxiliar para verificar roles
+    function hasRole(role) {
+      return request.auth != null && get(/databases/$(database)/documents/clients/$(request.auth.uid)).data.role == role;
+    }
+
     // Clients collection rules
     match /clients/{clientId} {
-      // Allow read and write only if user is authenticated
-      allow read, write: if isAuthenticated();
+      // Admins podem ler e escrever
+      allow read, write: if hasRole('admin');
+      // Clientes só podem ler seus próprios dados
+      allow read: if request.auth != null && request.auth.uid == resource.data.uid;
       
       // Nested collections under clients
       match /{document=**} {

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { collection, addDoc, getFirestore } from 'firebase/firestore';
+import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import app from '@/config/firebase';
 import type { CreateCustomerData } from '@/lib/asaas';
 
@@ -21,6 +22,7 @@ export default function NewClientPage() {
   });
 
   const db = getFirestore(app);
+  const auth = getAuth(app);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -33,15 +35,18 @@ export default function NewClientPage() {
         return;
       }
 
-      // Log dos dados que serão enviados
-      console.log('Dados do formulário:', {
-        name: formData.name,
-        email: formData.email,
-        cpfCnpj: formData.cpf,
-        mobilePhone: formData.phone
-      });
+      // 1. Criar senha usando CPF
+      const cpfClean = formData.cpf.replace(/\D/g, '');
+      const password = `${cpfClean.slice(0, 3)}${cpfClean.slice(-3)}`; // Primeiros 3 + últimos 3 dígitos
+      
+      // 2. Criar usuário no Firebase Auth
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        formData.email,
+        password
+      );
 
-      // Cria o cliente no Asaas através da nossa API
+      // 3. Criar cliente no Asaas
       const response = await fetch('/api/asaas/customers', {
         method: 'POST',
         headers: {
@@ -55,23 +60,25 @@ export default function NewClientPage() {
         } as CreateCustomerData)
       });
 
-      // Log da resposta
-      console.log('Status da resposta:', response.status);
-      
-      const responseData = await response.json();
-      console.log('Dados da resposta:', responseData);
-
       if (!response.ok) {
-        throw new Error(responseData.error || 'Erro ao criar cliente');
+        const error = await response.json();
+        throw new Error(error.error || 'Erro ao criar cliente no Asaas');
       }
 
-      // Salva no Firestore
+      const asaasCustomer = await response.json();
+
+      // 4. Salvar no Firestore com dados adicionais
       const docRef = await addDoc(collection(db, 'clients'), {
         ...formData,
-        asaasId: responseData.id,
-        createdAt: new Date().toISOString()
+        uid: userCredential.user.uid,
+        asaasId: asaasCustomer.id,
+        createdAt: new Date().toISOString(),
+        role: 'client'
       });
 
+      // 5. Mostrar senha ao usuário
+      alert(`Cliente criado com sucesso!\n\nDados de acesso:\nEmail: ${formData.email}\nSenha: ${password}\n\nPor favor, anote a senha.`);
+      
       router.push(`/dashboard/clients/${docRef.id}`);
     } catch (error: any) {
       console.error('Erro ao criar cliente:', error);
