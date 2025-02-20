@@ -1,86 +1,83 @@
-interface AsaasConfig {
-  apiKey: string;
-  environment: 'sandbox' | 'production';
+export interface CreateCustomerData {
+  name: string;
+  email: string;
+  cpfCnpj: string;
+  mobilePhone?: string;
 }
 
-interface CreditCardData {
-  holderName: string;
-  number: string;
-  expiryMonth: string;
-  expiryYear: string;
-  ccv: string;
+export interface AsaasCustomerResponse {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  mobilePhone: string;
+  cpfCnpj: string;
+  createdAt: string;
 }
 
-interface TokenizedCard {
-  creditCardToken: string;
-  creditCardNumber: string; // últimos 4 dígitos
-  creditCardBrand: string;
-  creditCardToken: string;
-}
-
-class AsaasClient {
-  private baseUrl: string;
-  private apiKey: string;
-
-  constructor(config: AsaasConfig) {
-    this.apiKey = config.apiKey;
-    this.baseUrl = config.environment === 'sandbox' 
-      ? 'https://sandbox.asaas.com/api/v3'
-      : 'https://api.asaas.com/api/v3';
+export interface TokenizeCardData {
+  customer: string;
+  creditCard: {
+    holderName: string;
+    number: string;
+    expiryMonth: string;
+    expiryYear: string;
+    ccv: string;
   }
+}
 
-  async tokenizeCard(cardData: CreditCardData): Promise<TokenizedCard> {
-    const response = await fetch(`${this.baseUrl}/creditCard/tokenize`, {
+const ASAAS_BASE_URL = process.env.ASAAS_ENVIRONMENT === 'production'
+  ? 'https://api.asaas.com/v3'
+  : 'https://api-sandbox.asaas.com/v3';
+
+export async function createAsaasCustomer(data: CreateCustomerData): Promise<AsaasCustomerResponse> {
+  try {
+    const response = await fetch(`${ASAAS_BASE_URL}/customers`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'access_token': this.apiKey
+        'access_token': process.env.ASAAS_API_KEY || '',
       },
       body: JSON.stringify({
-        customer: cardData.holderName,
-        creditCard: {
-          holderName: cardData.holderName,
-          number: cardData.number,
-          expiryMonth: cardData.expiryMonth,
-          expiryYear: cardData.expiryYear,
-          ccv: cardData.ccv
-        }
+        name: data.name,
+        email: data.email,
+        cpfCnpj: data.cpfCnpj.replace(/\D/g, ''),
+        phone: data.mobilePhone?.replace(/\D/g, ''),
+        notificationDisabled: false
       })
     });
 
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message || 'Erro ao tokenizar cartão');
+      throw new Error(error.errors?.[0]?.description || error.message || 'Erro ao criar cliente');
     }
 
     return response.json();
+  } catch (error: any) {
+    console.error('Erro ao criar cliente no Asaas:', error);
+    throw new Error(error.message || 'Erro ao criar cliente no Asaas');
   }
+}
 
-  async createCustomer(data: {
-    name: string;
-    email: string;
-    cpfCnpj: string;
-  }) {
-    const response = await fetch(`${this.baseUrl}/customers`, {
+export async function tokenizeCard(data: TokenizeCardData) {
+  try {
+    const response = await fetch(`${ASAAS_BASE_URL}/creditCard/tokenize`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'access_token': this.apiKey
+        'access_token': process.env.ASAAS_API_KEY || '',
       },
       body: JSON.stringify(data)
     });
 
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message || 'Erro ao criar cliente');
+      throw new Error(error.errors?.[0]?.description || error.message || 'Erro ao tokenizar cartão');
     }
 
     return response.json();
+  } catch (error: any) {
+    console.error('Erro ao tokenizar cartão:', error);
+    throw new Error(error.message || 'Erro ao tokenizar cartão');
   }
-}
-
-// Instância singleton do cliente
-export const asaasClient = new AsaasClient({
-  apiKey: process.env.NEXT_PUBLIC_ASAAS_API_KEY || '',
-  environment: (process.env.NEXT_PUBLIC_ASAAS_ENVIRONMENT || 'sandbox') as 'sandbox' | 'production'
-}); 
+} 

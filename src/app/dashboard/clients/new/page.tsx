@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { collection, addDoc, getFirestore } from 'firebase/firestore';
 import app from '@/config/firebase';
+import type { CreateCustomerData } from '@/lib/asaas';
 
 export default function NewClientPage() {
   const router = useRouter();
@@ -16,35 +17,65 @@ export default function NewClientPage() {
     managementFee: '',
     performanceFee: '',
     investedAmount: '',
+    cpf: '',
   });
 
   const db = getFirestore(app);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      // Remove formatting from phone number before saving
-      const cleanPhone = formData.phone.replace(/\D/g, '');
+      // Validação dos campos obrigatórios
+      if (!formData.name || !formData.email || !formData.cpf) {
+        alert('Por favor, preencha todos os campos obrigatórios');
+        return;
+      }
 
-      const dataToSubmit = {
+      // Log dos dados que serão enviados
+      console.log('Dados do formulário:', {
+        name: formData.name,
+        email: formData.email,
+        cpfCnpj: formData.cpf,
+        mobilePhone: formData.phone
+      });
+
+      // Cria o cliente no Asaas através da nossa API
+      const response = await fetch('/api/asaas/customers', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          cpfCnpj: formData.cpf,
+          mobilePhone: formData.phone
+        } as CreateCustomerData)
+      });
+
+      // Log da resposta
+      console.log('Status da resposta:', response.status);
+      
+      const responseData = await response.json();
+      console.log('Dados da resposta:', responseData);
+
+      if (!response.ok) {
+        throw new Error(responseData.error || 'Erro ao criar cliente');
+      }
+
+      // Salva no Firestore
+      const docRef = await addDoc(collection(db, 'clients'), {
         ...formData,
-        phone: cleanPhone,
-        brokers: formData.brokers.filter(broker => broker.trim() !== ''),
-        managementFee: formData.managementFee ? parseFloat(formData.managementFee) : null,
-        performanceFee: formData.performanceFee ? parseFloat(formData.performanceFee) : null,
-        investedAmount: formData.investedAmount 
-          ? parseFloat(formData.investedAmount.replace(/[R$\s.]/g, '').replace(',', '.'))
-          : null,
-        createdAt: new Date(),
-      };
+        asaasId: responseData.id,
+        createdAt: new Date().toISOString()
+      });
 
-      await addDoc(collection(db, 'clients'), dataToSubmit);
-      router.push('/dashboard/clients');
-    } catch (error) {
-      console.error('Error adding client:', error);
-      alert('Erro ao adicionar cliente. Por favor, tente novamente.');
+      router.push(`/dashboard/clients/${docRef.id}`);
+    } catch (error: any) {
+      console.error('Erro ao criar cliente:', error);
+      alert(error.message || 'Erro ao criar cliente. Por favor, tente novamente.');
     } finally {
       setLoading(false);
     }
@@ -120,6 +151,7 @@ export default function NewClientPage() {
               Nome
             </label>
             <input
+              name="name"
               type="text"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -133,6 +165,7 @@ export default function NewClientPage() {
               WhatsApp
             </label>
             <input
+              name="phone"
               type="tel"
               value={formData.phone}
               onChange={handlePhoneChange}
@@ -147,9 +180,23 @@ export default function NewClientPage() {
               E-mail
             </label>
             <input
+              name="email"
               type="email"
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1">
+              CPF
+            </label>
+            <input
+              name="cpf"
+              type="text"
+              value={formData.cpf}
+              onChange={(e) => setFormData({ ...formData, cpf: e.target.value })}
               className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
             />
           </div>
@@ -252,7 +299,7 @@ export default function NewClientPage() {
               className="px-4 py-2 bg-cyan-500 text-white rounded hover:bg-cyan-600 disabled:opacity-50"
               disabled={loading}
             >
-              {loading ? 'Adicionando...' : 'Adicionar Cliente'}
+              {loading ? 'Criando...' : 'Criar Cliente'}
             </button>
           </div>
         </form>

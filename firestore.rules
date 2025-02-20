@@ -21,6 +21,15 @@ service cloud.firestore {
       match /{document=**} {
         allow read, write: if isAuthenticated();
       }
+
+      allow create: if request.auth != null 
+        && request.resource.data.keys().hasAll(['name', 'email', 'cpf', 'phone', 'asaasId', 'createdAt'])
+        && request.resource.data.name is string
+        && request.resource.data.email is string
+        && request.resource.data.cpf is string
+        && request.resource.data.phone is string
+        && request.resource.data.asaasId is string
+        && request.resource.data.createdAt is string;
     }
 
     // Allocations collection rules
