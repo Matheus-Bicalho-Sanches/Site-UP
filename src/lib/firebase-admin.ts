@@ -13,17 +13,33 @@ if (
   throw new Error('Credenciais do Firebase Admin não configuradas corretamente');
 }
 
-// Usar apenas as propriedades necessárias para o cert()
-const serviceAccount = {
-  projectId: process.env.FIREBASE_PROJECT_ID,
-  privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
-  clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-};
-
 if (!getApps().length) {
-  initializeApp({
-    credential: cert(serviceAccount)
-  });
+  try {
+    // Adicionar logs para debug
+    console.log('Inicializando Firebase Admin...');
+    
+    const serviceAccount = {
+      projectId: process.env.FIREBASE_PROJECT_ID,
+      privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+    };
+
+    // Log para verificar as credenciais (não fazer isso em produção!)
+    console.log('Service Account:', {
+      projectId: serviceAccount.projectId,
+      clientEmail: serviceAccount.clientEmail,
+      privateKeyLength: serviceAccount.privateKey?.length
+    });
+
+    initializeApp({
+      credential: cert(serviceAccount)
+    });
+    
+    console.log('Firebase Admin inicializado com sucesso!');
+  } catch (error) {
+    console.error('Erro ao inicializar Firebase Admin:', error);
+    throw error;
+  }
 }
 
 export const adminDb = getFirestore(); 

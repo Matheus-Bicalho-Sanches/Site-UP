@@ -6,23 +6,24 @@ const ASAAS_BASE_URL = 'https://api.asaas.com/v3';
 
 export async function POST(request: Request) {
   try {
+    console.log('Iniciando processamento de pagamento...');
+    
+    const { paymentId, method, clientId } = await request.json();
+    console.log('Dados recebidos:', { paymentId, method, clientId });
+
     // Verificar se a API key existe
     if (!ASAAS_API_KEY) {
       throw new Error('ASAAS_API_KEY não configurada');
     }
 
-    const { paymentId, method, clientId } = await request.json();
-    console.log('Recebendo requisição:', { paymentId, method, clientId });
-
     // Buscar o pagamento no Firestore
     const paymentDoc = await adminDb.collection('payments').doc(paymentId).get();
     if (!paymentDoc.exists) {
+      console.error('Pagamento não encontrado:', paymentId);
       return NextResponse.json({ error: 'Pagamento não encontrado' }, { status: 404 });
     }
+
     const paymentData = paymentDoc.data();
-    if (!paymentData) {
-      return NextResponse.json({ error: 'Dados do pagamento não encontrados' }, { status: 404 });
-    }
     console.log('Dados do pagamento:', paymentData);
     
     // Se for pagamento com cartão, processar via Asaas
@@ -114,7 +115,12 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true });
   } catch (error: any) {
-    console.error('Erro ao processar pagamento:', error);
+    console.error('Erro detalhado ao processar pagamento:', {
+      message: error.message,
+      stack: error.stack,
+      code: error.code
+    });
+    
     return NextResponse.json(
       { error: error.message || 'Erro ao processar pagamento' },
       { status: 500 }
