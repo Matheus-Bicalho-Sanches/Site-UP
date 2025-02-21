@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   description: 'Portal do cliente UP Gestão',
 }
 
-export default function DashboardLayout({
+export default function ClientPortalLayout({
   children,
 }: {
   children: React.ReactNode
