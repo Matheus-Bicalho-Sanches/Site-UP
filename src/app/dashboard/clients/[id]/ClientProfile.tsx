@@ -19,6 +19,7 @@ interface Client {
   lastMeeting?: string;
   nextMeeting?: string;
   observations?: string;
+  cardTokenId?: string;
 }
 
 interface SectionProps {
@@ -347,10 +348,31 @@ export default function ClientProfilePageClient({ id }: { id: string }) {
         </div>
       </Section>
 
-      {/* New Payments Section */}
+      {/* Seção de Pagamentos */}
       <div className="bg-gray-800 rounded-lg p-6">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-bold text-white">Pagamentos</h2>
+          <div className="flex items-center gap-4">
+            <h2 className="text-xl font-bold text-white">Pagamentos</h2>
+            <div className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                checked={!!client?.cardTokenId}
+                className="w-4 h-4 text-cyan-500 bg-gray-700 border-gray-600 rounded focus:ring-cyan-500 focus:ring-2"
+                disabled
+              />
+              <span className="text-gray-300 text-sm">
+                Cartão cadastrado
+              </span>
+              {!client?.cardTokenId && (
+                <Link
+                  href={`/dashboard/clients/${id}/card`}
+                  className="text-cyan-500 hover:text-cyan-400 text-sm ml-2"
+                >
+                  Cadastrar cartão
+                </Link>
+              )}
+            </div>
+          </div>
           <button
             onClick={() => router.push(`/dashboard/clients/${id}/payments/new`)}
             className="px-4 py-2 bg-cyan-500 text-white rounded hover:bg-cyan-600"
