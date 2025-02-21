@@ -24,27 +24,27 @@ const menuItems = [
   },
   {
     name: 'Carteira',
-    href: '/client-portal/portfolio',
+    href: '/client-portal/dashboard/portfolio',
     icon: WalletIcon
   },
   {
     name: 'Pagamentos',
-    href: '/client-portal/payments',
+    href: '/client-portal/dashboard/payments',
     icon: BanknotesIcon
   },
   {
     name: 'Retorno',
-    href: '/client-portal/performance',
+    href: '/client-portal/dashboard/performance',
     icon: ChartBarIcon
   },
   {
     name: 'Relatórios',
-    href: '/client-portal/reports',
+    href: '/client-portal/dashboard/reports',
     icon: DocumentTextIcon
   },
   {
     name: 'Perfil',
-    href: '/client-portal/profile',
+    href: '/client-portal/dashboard/profile',
     icon: UserIcon
   }
 ];
