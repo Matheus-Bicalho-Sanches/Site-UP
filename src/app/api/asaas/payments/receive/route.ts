@@ -7,6 +7,7 @@ const ASAAS_BASE_URL = 'https://api.asaas.com/v3';
 export async function POST(request: Request) {
   try {
     const { paymentId, method, clientId } = await request.json();
+    console.log('Recebendo requisição:', { paymentId, method, clientId });
 
     // Buscar o pagamento no Firestore
     const paymentDoc = await adminDb.collection('payments').doc(paymentId).get();
@@ -14,6 +15,10 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Pagamento não encontrado' }, { status: 404 });
     }
     const paymentData = paymentDoc.data();
+    if (!paymentData) {
+      return NextResponse.json({ error: 'Dados do pagamento não encontrados' }, { status: 404 });
+    }
+    console.log('Dados do pagamento:', paymentData);
     
     // Se for pagamento com cartão, processar via Asaas
     if (method === 'CREDIT_CARD') {
@@ -23,7 +28,10 @@ export async function POST(request: Request) {
       }
 
       const clientData = clientDoc.data();
-      console.log('Client Data:', clientData);
+      if (!clientData) {
+        return NextResponse.json({ error: 'Dados do cliente não encontrados' }, { status: 404 });
+      }
+      console.log('Dados do cliente:', clientData);
 
       if (!clientData?.cardTokenId) {
         return NextResponse.json({ error: 'Cliente não possui cartão cadastrado' }, { status: 400 });
@@ -33,18 +41,18 @@ export async function POST(request: Request) {
       const headers = {
         'Content-Type': 'application/json',
         'access_token': ASAAS_API_KEY,
-        'User-Agent': 'UP Gestão' // Nome da aplicação
+        'User-Agent': 'UP Gestão'
       };
 
       // Simplificar o payload
       const asaasPayload = {
         customer: clientData.asaasId,
         billingType: 'CREDIT_CARD',
-        value: paymentData.value,
-        dueDate: paymentData.dueDate,
+        value: paymentData.value || 0, // Valor padrão caso seja undefined
+        dueDate: paymentData.dueDate || new Date().toISOString().split('T')[0], // Data atual como padrão
         description: 'Pagamento de serviços',
         externalReference: paymentId,
-        creditCardToken: clientData.cardTokenId // Apenas o token é necessário
+        creditCardToken: clientData.cardTokenId
       };
 
       console.log('Enviando para Asaas:', {
