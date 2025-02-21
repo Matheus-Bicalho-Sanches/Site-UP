@@ -1,5 +1,6 @@
 import { initializeApp, getApps, cert } from 'firebase-admin/app';
 import { getFirestore } from 'firebase-admin/firestore';
+import { credential } from 'firebase-admin';
 
 // Verificar se todas as variáveis de ambiente necessárias estão presentes
 if (
@@ -16,37 +17,23 @@ if (
 if (!getApps().length) {
   try {
     console.log('Inicializando Firebase Admin...');
-    
-    const privateKey = process.env.FIREBASE_PRIVATE_KEY;
-    console.log('Private Key Format:', {
-      originalLength: privateKey?.length,
-      hasBeginMarker: privateKey?.includes('BEGIN PRIVATE KEY'),
-      hasEndMarker: privateKey?.includes('END PRIVATE KEY'),
-      containsNewlines: privateKey?.includes('\\n')
-    });
 
-    const formattedKey = privateKey?.replace(/\\n/g, '\n');
-    console.log('Formatted Key Info:', {
-      formattedLength: formattedKey?.length,
-      hasRealNewlines: formattedKey?.includes('\n'),
-      firstFewChars: formattedKey?.substring(0, 50) + '...'
-    });
-
+    // Usar o objeto de credenciais completo
     const serviceAccount = {
-      projectId: process.env.FIREBASE_PROJECT_ID,
-      privateKey: formattedKey,
-      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+      type: 'service_account',
+      project_id: process.env.FIREBASE_PROJECT_ID,
+      private_key_id: process.env.FIREBASE_PRIVATE_KEY_ID,
+      private_key: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+      client_email: process.env.FIREBASE_CLIENT_EMAIL,
+      client_id: process.env.FIREBASE_CLIENT_ID,
+      auth_uri: 'https://accounts.google.com/o/oauth2/auth',
+      token_uri: 'https://oauth2.googleapis.com/token',
+      auth_provider_x509_cert_url: 'https://www.googleapis.com/oauth2/v1/certs',
+      client_x509_cert_url: process.env.FIREBASE_CERT_URL
     };
 
-    // Log para verificar as credenciais (não fazer isso em produção!)
-    console.log('Service Account:', {
-      projectId: serviceAccount.projectId,
-      clientEmail: serviceAccount.clientEmail,
-      privateKeyLength: serviceAccount.privateKey?.length
-    });
-
     initializeApp({
-      credential: cert(serviceAccount)
+      credential: credential.cert(serviceAccount)
     });
     
     console.log('Firebase Admin inicializado com sucesso!');
