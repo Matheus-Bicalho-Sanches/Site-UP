@@ -6,6 +6,7 @@ import app from '@/config/firebase';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { collection, query, where, getDocs } from 'firebase/firestore';
+import PaymentModal from '@/components/payment-modal';
 
 interface Client {
   id: string;
@@ -91,6 +92,7 @@ interface Payment {
   value: number;
   status: 'pending' | 'paid' | 'overdue';
   dueDate: string;
+  asaasId?: string; // ID do pagamento no Asaas
 }
 
 export default function ClientProfilePageClient({ id }: { id: string }) {
@@ -100,6 +102,8 @@ export default function ClientProfilePageClient({ id }: { id: string }) {
   const db = getFirestore(app);
   const [payments, setPayments] = useState<Payment[]>([]);
   const [loadingPayments, setLoadingPayments] = useState(true);
+  const [selectedPayment, setSelectedPayment] = useState<Payment | null>(null);
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchClient = async () => {
@@ -163,6 +167,43 @@ export default function ClientProfilePageClient({ id }: { id: string }) {
       style: 'currency',
       currency: 'BRL'
     });
+  };
+
+  // Função para processar o pagamento
+  const handlePayment = async (paymentId: string, method: 'CREDIT_CARD' | 'PIX') => {
+    try {
+      const response = await fetch('/api/asaas/payments/receive', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          paymentId,
+          method,
+          clientId: id
+        })
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Erro ao processar pagamento');
+      }
+
+      // Atualizar a lista de pagamentos
+      const updatedPayments = payments.map(payment => 
+        payment.id === paymentId 
+          ? { ...payment, status: 'paid' as const }
+          : payment
+      );
+      setPayments(updatedPayments);
+      setIsPaymentModalOpen(false);
+      setSelectedPayment(null);
+
+      alert('Pagamento processado com sucesso!');
+    } catch (error: any) {
+      console.error('Erro ao processar pagamento:', error);
+      alert(error.message || 'Erro ao processar pagamento');
+    }
   };
 
   if (loading) {
@@ -450,7 +491,10 @@ export default function ClientProfilePageClient({ id }: { id: string }) {
 
                         {payment.status !== 'paid' && (
                           <button
-                            onClick={() => {/* Adicionar lógica de recebimento */}}
+                            onClick={() => {
+                              setSelectedPayment(payment);
+                              setIsPaymentModalOpen(true);
+                            }}
                             className="p-1.5 text-gray-400 hover:text-green-500 transition-colors"
                             title="Receber pagamento"
                           >
@@ -483,6 +527,20 @@ export default function ClientProfilePageClient({ id }: { id: string }) {
           </div>
         )}
       </div>
+
+      {/* Modal de Pagamento */}
+      {selectedPayment && (
+        <PaymentModal
+          isOpen={isPaymentModalOpen}
+          onClose={() => {
+            setIsPaymentModalOpen(false)
+            setSelectedPayment(null)
+          }}
+          onConfirm={(method) => handlePayment(selectedPayment.id, method)}
+          hasCard={!!client?.cardTokenId}
+          value={selectedPayment.value}
+        />
+      )}
     </div>
   );
 } 
