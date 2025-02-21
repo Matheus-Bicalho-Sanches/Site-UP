@@ -1,6 +1,6 @@
 import { initializeApp, getApps, cert } from 'firebase-admin/app';
 import { getFirestore } from 'firebase-admin/firestore';
-import { credential } from 'firebase-admin';
+import { ServiceAccount } from 'firebase-admin';
 
 // Verificar se todas as variáveis de ambiente necessárias estão presentes
 if (
@@ -18,7 +18,6 @@ if (!getApps().length) {
   try {
     console.log('Inicializando Firebase Admin...');
 
-    // Usar o objeto de credenciais completo
     const serviceAccount = {
       type: 'service_account',
       project_id: process.env.FIREBASE_PROJECT_ID,
@@ -30,10 +29,10 @@ if (!getApps().length) {
       token_uri: 'https://oauth2.googleapis.com/token',
       auth_provider_x509_cert_url: 'https://www.googleapis.com/oauth2/v1/certs',
       client_x509_cert_url: process.env.FIREBASE_CERT_URL
-    };
+    } as ServiceAccount;
 
     initializeApp({
-      credential: credential.cert(serviceAccount)
+      credential: cert(serviceAccount)
     });
     
     console.log('Firebase Admin inicializado com sucesso!');

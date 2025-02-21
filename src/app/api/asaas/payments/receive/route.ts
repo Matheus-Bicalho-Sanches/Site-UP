@@ -1,18 +1,17 @@
 import { NextResponse } from 'next/server';
 import { adminDb } from '@/lib/firebase-admin';
-
-const ASAAS_API_KEY = process.env.ASAAS_API_KEY;
-const ASAAS_BASE_URL = 'https://api.asaas.com/v3';
+import { ASAAS_CONFIG } from '@/lib/asaas';
 
 export async function POST(request: Request) {
   try {
     console.log('Iniciando processamento de pagamento...');
+    console.log('URL Base Asaas:', ASAAS_CONFIG.BASE_URL);
     
     const { paymentId, method, clientId } = await request.json();
     console.log('Dados recebidos:', { paymentId, method, clientId });
 
     // Verificar se a API key existe
-    if (!ASAAS_API_KEY) {
+    if (!ASAAS_CONFIG.API_KEY) {
       throw new Error('ASAAS_API_KEY não configurada');
     }
 
@@ -54,12 +53,11 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: 'Cliente não possui cartão cadastrado' }, { status: 400 });
       }
 
-      // Headers conforme documentação oficial
+      // Headers do Asaas
       const headers = {
-        'Content-Type': 'application/json',
-        'access_token': ASAAS_API_KEY,
+        ...ASAAS_CONFIG.HEADERS,
         'User-Agent': 'UP Gestão'
-      } as const;
+      };
 
       // Simplificar o payload
       const asaasPayload = {
@@ -77,38 +75,40 @@ export async function POST(request: Request) {
         url: '/payments',
         headers: {
           ...headers,
-          'access_token': `${ASAAS_API_KEY?.substring(0, 10)}...`
+          'access_token': `${ASAAS_CONFIG.API_KEY?.substring(0, 10)}...`
         },
         payload: asaasPayload
       });
 
       // Criar pagamento no Asaas
-      const response = await fetch(`${ASAAS_BASE_URL}/payments`, {
+      const response = await fetch(`${ASAAS_CONFIG.BASE_URL}/payments`, {
         method: 'POST',
         headers,
         body: JSON.stringify(asaasPayload)
       });
 
-      const responseText = await response.text();
-      console.log('Resposta do Asaas:', {
-        statusCode: response.status,
-        url: '/payments',
-        headers: Object.fromEntries(response.headers.entries()),
-        body: responseText
-      });
-
+      // Se a resposta não for ok, tentar obter mais detalhes do erro
       if (!response.ok) {
+        const responseText = await response.text();
+        console.error('Erro na resposta do Asaas:', {
+          status: response.status,
+          statusText: response.statusText,
+          body: responseText
+        });
+
         try {
           const errorData = JSON.parse(responseText);
           throw new Error(errorData.errors?.[0]?.description || 'Erro ao processar pagamento');
         } catch (e) {
-          console.error('Erro ao parsear resposta do Asaas:', e);
-          throw new Error('Erro ao processar pagamento com cartão');
+          if (response.status === 401) {
+            throw new Error('Erro de autenticação com o Asaas. Verifique a chave API.');
+          }
+          throw new Error(`Erro ao processar pagamento: ${response.statusText}`);
         }
       }
 
       // Tentar parsear a resposta
-      const asaasResponse = JSON.parse(responseText);
+      const asaasResponse = JSON.parse(await response.text());
       
       // Atualizar o pagamento com o ID do Asaas
       await adminDb.collection('payments').doc(paymentId).update({
@@ -134,7 +134,7 @@ export async function POST(request: Request) {
     
     return NextResponse.json(
       { error: error.message || 'Erro ao processar pagamento' },
-      { status: 500 }
+      { status: error.message.includes('autenticação') ? 401 : 500 }
     );
   }
 } 
