@@ -425,13 +425,52 @@ export default function ClientProfilePageClient({ id }: { id: string }) {
                           : 'Pendente'}
                       </span>
                     </td>
-                    <td className="py-3">
-                      <button
-                        onClick={() => router.push(`/dashboard/clients/${id}/payments/${payment.id}`)}
-                        className="text-cyan-500 hover:text-cyan-400"
-                      >
-                        Editar
-                      </button>
+                    <td className="py-3 text-right">
+                      <div className="flex justify-end gap-2">
+                        <button
+                          onClick={() => router.push(`/dashboard/clients/${id}/payments/${payment.id}`)}
+                          className="p-1.5 text-gray-400 hover:text-cyan-500 transition-colors"
+                          title="Editar"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-5 w-5"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                            />
+                          </svg>
+                        </button>
+
+                        {payment.status !== 'paid' && (
+                          <button
+                            onClick={() => {/* Adicionar lógica de recebimento */}}
+                            className="p-1.5 text-gray-400 hover:text-green-500 transition-colors"
+                            title="Receber pagamento"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              className="h-5 w-5"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"
+                              />
+                            </svg>
+                          </button>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))}
