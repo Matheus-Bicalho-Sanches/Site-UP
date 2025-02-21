@@ -19,7 +19,7 @@ import Header from './components/Header';
 const menuItems = [
   {
     name: 'Início',
-    href: '/client-portal',
+    href: '/client-portal/dashboard',
     icon: HomeIcon
   },
   {
