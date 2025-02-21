@@ -29,22 +29,66 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: 'Cliente não possui cartão cadastrado' }, { status: 400 });
       }
 
-      // Processar pagamento via Asaas
-      const response = await fetch(`${ASAAS_BASE_URL}/payments/${paymentData.asaasId}/pay`, {
+      // Headers conforme documentação oficial
+      const headers = {
+        'Content-Type': 'application/json',
+        'access_token': ASAAS_API_KEY,
+        'User-Agent': 'UP Gestão' // Nome da aplicação
+      };
+
+      // Simplificar o payload
+      const asaasPayload = {
+        customer: clientData.asaasId,
+        billingType: 'CREDIT_CARD',
+        value: paymentData.value,
+        dueDate: paymentData.dueDate,
+        description: 'Pagamento de serviços',
+        externalReference: paymentId,
+        creditCardToken: clientData.cardTokenId // Apenas o token é necessário
+      };
+
+      console.log('Enviando para Asaas:', {
         method: 'POST',
+        url: '/payments',
         headers: {
-          'Content-Type': 'application/json',
-          'access_token': ASAAS_API_KEY
+          ...headers,
+          'access_token': `${ASAAS_API_KEY?.substring(0, 10)}...`
         },
-        body: JSON.stringify({
-          billingType: 'CREDIT_CARD'
-        })
+        payload: asaasPayload
+      });
+
+      // Criar pagamento no Asaas
+      const response = await fetch(`${ASAAS_BASE_URL}/payments`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(asaasPayload)
+      });
+
+      const responseText = await response.text();
+      console.log('Resposta do Asaas:', {
+        statusCode: response.status,
+        url: '/payments',
+        headers: Object.fromEntries(response.headers.entries()),
+        body: responseText
       });
 
       if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.errors?.[0]?.description || 'Erro ao processar pagamento');
+        try {
+          const errorData = JSON.parse(responseText);
+          throw new Error(errorData.errors?.[0]?.description || 'Erro ao processar pagamento');
+        } catch (e) {
+          console.error('Erro ao parsear resposta do Asaas:', e);
+          throw new Error('Erro ao processar pagamento com cartão');
+        }
       }
+
+      // Tentar parsear a resposta
+      const asaasResponse = JSON.parse(responseText);
+      
+      // Atualizar o pagamento com o ID do Asaas
+      await adminDb.collection('payments').doc(paymentId).update({
+        asaasId: asaasResponse.id
+      });
     }
 
     // Atualizar status no Firestore (tanto para PIX quanto para cartão)
@@ -52,7 +96,7 @@ export async function POST(request: Request) {
       status: 'paid',
       paidAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-      paymentMethod: method // Registrar o método usado
+      paymentMethod: method
     });
 
     return NextResponse.json({ success: true });
