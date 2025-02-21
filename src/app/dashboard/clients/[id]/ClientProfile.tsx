@@ -21,6 +21,7 @@ interface Client {
   nextMeeting?: string;
   observations?: string;
   cardTokenId?: string;
+  asaasId?: string;
 }
 
 interface SectionProps {
@@ -178,9 +179,12 @@ export default function ClientProfilePageClient({ id }: { id: string }) {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          paymentId,
-          method,
-          clientId: id
+          paymentMethod: method,
+          paymentId: paymentId,
+          customerId: client?.asaasId,
+          value: selectedPayment?.value,
+          creditCardToken: client?.cardTokenId,
+          description: selectedPayment?.description
         })
       });
 

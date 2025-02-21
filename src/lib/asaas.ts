@@ -42,22 +42,18 @@ export interface TokenizedCardResponse {
   creditCardBrand: string;
 }
 
-export const ASAAS_CONFIG = {
-  API_KEY: process.env.ASAAS_API_KEY,
-  BASE_URL: process.env.NODE_ENV === 'production' 
-    ? 'https://api.asaas.com/v3'
-    : 'https://api-sandbox.asaas.com/v3',
-  HEADERS: {
-    'Content-Type': 'application/json',
-    'access_token': process.env.ASAAS_API_KEY || '',
-  }
-};
+const ASAAS_BASE_URL = process.env.ASAAS_ENVIRONMENT === 'production'
+  ? 'https://api.asaas.com/v3'
+  : 'https://api-sandbox.asaas.com/v3';
 
 export async function createAsaasCustomer(data: CreateCustomerData): Promise<AsaasCustomerResponse> {
   try {
-    const response = await fetch(`${ASAAS_CONFIG.BASE_URL}/customers`, {
+    const response = await fetch(`${ASAAS_BASE_URL}/customers`, {
       method: 'POST',
-      headers: ASAAS_CONFIG.HEADERS,
+      headers: {
+        'Content-Type': 'application/json',
+        'access_token': process.env.ASAAS_API_KEY || '',
+      },
       body: JSON.stringify({
         name: data.name,
         email: data.email,
@@ -81,9 +77,12 @@ export async function createAsaasCustomer(data: CreateCustomerData): Promise<Asa
 
 export async function tokenizeCard(data: TokenizeCardData) {
   try {
-    const response = await fetch(`${ASAAS_CONFIG.BASE_URL}/creditCard/tokenize`, {
+    const response = await fetch(`${ASAAS_BASE_URL}/creditCard/tokenize`, {
       method: 'POST',
-      headers: ASAAS_CONFIG.HEADERS,
+      headers: {
+        'Content-Type': 'application/json',
+        'access_token': process.env.ASAAS_API_KEY || '',
+      },
       body: JSON.stringify(data)
     });
 
@@ -96,5 +95,36 @@ export async function tokenizeCard(data: TokenizeCardData) {
   } catch (error: any) {
     console.error('Erro ao tokenizar cartão:', error);
     throw new Error(error.message || 'Erro ao tokenizar cartão');
+  }
+}
+
+export async function createPayment(paymentData: any) {
+  try {
+    const response = await fetch(`${ASAAS_BASE_URL}/payments`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'access_token': process.env.ASAAS_API_KEY || ''
+      },
+      body: JSON.stringify(paymentData)
+    });
+
+    const responseText = await response.text();
+    
+    try {
+      const responseData = JSON.parse(responseText);
+      
+      if (!response.ok) {
+        throw new Error(responseData.errors?.[0]?.description || 'Erro ao processar pagamento');
+      }
+      
+      return responseData;
+    } catch (parseError) {
+      console.error('Erro ao parsear resposta:', responseText);
+      throw new Error('Erro ao processar resposta do servidor');
+    }
+  } catch (error: any) {
+    console.error('Erro na API do Asaas:', error);
+    throw error;
   }
 } 
