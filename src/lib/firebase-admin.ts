@@ -15,12 +15,26 @@ if (
 
 if (!getApps().length) {
   try {
-    // Adicionar logs para debug
     console.log('Inicializando Firebase Admin...');
     
+    const privateKey = process.env.FIREBASE_PRIVATE_KEY;
+    console.log('Private Key Format:', {
+      originalLength: privateKey?.length,
+      hasBeginMarker: privateKey?.includes('BEGIN PRIVATE KEY'),
+      hasEndMarker: privateKey?.includes('END PRIVATE KEY'),
+      containsNewlines: privateKey?.includes('\\n')
+    });
+
+    const formattedKey = privateKey?.replace(/\\n/g, '\n');
+    console.log('Formatted Key Info:', {
+      formattedLength: formattedKey?.length,
+      hasRealNewlines: formattedKey?.includes('\n'),
+      firstFewChars: formattedKey?.substring(0, 50) + '...'
+    });
+
     const serviceAccount = {
       projectId: process.env.FIREBASE_PROJECT_ID,
-      privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+      privateKey: formattedKey,
       clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
     };
 

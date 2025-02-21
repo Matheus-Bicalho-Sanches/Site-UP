@@ -24,6 +24,17 @@ export async function POST(request: Request) {
     }
 
     const paymentData = paymentDoc.data();
+    if (!paymentData) {
+      console.error('Dados do pagamento não encontrados');
+      return NextResponse.json({ error: 'Dados do pagamento não encontrados' }, { status: 404 });
+    }
+
+    // Validar os campos necessários
+    if (!paymentData.value || !paymentData.dueDate) {
+      console.error('Dados do pagamento incompletos:', { value: paymentData.value, dueDate: paymentData.dueDate });
+      return NextResponse.json({ error: 'Dados do pagamento incompletos' }, { status: 400 });
+    }
+
     console.log('Dados do pagamento:', paymentData);
     
     // Se for pagamento com cartão, processar via Asaas
@@ -54,8 +65,8 @@ export async function POST(request: Request) {
       const asaasPayload = {
         customer: clientData.asaasId,
         billingType: 'CREDIT_CARD',
-        value: paymentData.value || 0, // Valor padrão caso seja undefined
-        dueDate: paymentData.dueDate || new Date().toISOString().split('T')[0], // Data atual como padrão
+        value: paymentData.value,
+        dueDate: paymentData.dueDate,
         description: 'Pagamento de serviços',
         externalReference: paymentId,
         creditCardToken: clientData.cardTokenId
