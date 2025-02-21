@@ -49,6 +49,8 @@ const menuItems = [
   }
 ];
 
+export const dynamic = 'force-dynamic'
+
 export default function ClientPortalLayout({
   children,
 }: {

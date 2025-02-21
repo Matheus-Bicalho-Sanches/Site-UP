@@ -1,3 +1,20 @@
+import { Metadata } from 'next'
+import { headers } from 'next/headers'
+
+// Marcar a página como dinâmica
+export const dynamic = 'force-dynamic'
+
+// Opcional: Desabilitar pré-renderização estática
+export const generateStaticParams = () => {
+  return []
+}
+
+// Metadados da página
+export const metadata: Metadata = {
+  title: 'Portal do Cliente',
+  description: 'Portal do cliente UP Gestão',
+}
+
 'use client'
 
 import { useEffect, useState } from 'react';
@@ -24,7 +41,7 @@ interface AllocationData {
   }[];
 }
 
-export default function ClientPortalPage() {
+export default async function ClientPortalPage() {
   const { user } = useAuth();
   const [clientData, setClientData] = useState<ClientData | null>(null);
   const [latestAllocation, setLatestAllocation] = useState<AllocationData | null>(null);
