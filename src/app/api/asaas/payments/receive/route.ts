@@ -6,6 +6,11 @@ const ASAAS_BASE_URL = 'https://api.asaas.com/v3';
 
 export async function POST(request: Request) {
   try {
+    // Verificar se a API key existe
+    if (!ASAAS_API_KEY) {
+      throw new Error('ASAAS_API_KEY não configurada');
+    }
+
     const { paymentId, method, clientId } = await request.json();
     console.log('Recebendo requisição:', { paymentId, method, clientId });
 
@@ -42,7 +47,7 @@ export async function POST(request: Request) {
         'Content-Type': 'application/json',
         'access_token': ASAAS_API_KEY,
         'User-Agent': 'UP Gestão'
-      };
+      } as const;
 
       // Simplificar o payload
       const asaasPayload = {
