@@ -15,7 +15,6 @@ if (
 }
 
 const serviceAccount: ServiceAccount = {
-  type: "service_account",
   projectId: process.env.FIREBASE_PROJECT_ID,
   privateKeyId: process.env.FIREBASE_PRIVATE_KEY_ID,
   privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
